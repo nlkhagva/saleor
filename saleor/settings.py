@@ -197,7 +197,7 @@ TEMPLATES = [
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ.get("SECRET_KEY")
-
+# SECRET_KEY = '()4+wn$v$&=rl1z-i$5czb*gwiy2$1h_mu8k66td+n)w640n*b'
 if not SECRET_KEY and DEBUG:
     warnings.warn("SECRET_KEY not configured, using a random temporary key.")
     SECRET_KEY = get_random_secret_key()
@@ -212,6 +212,7 @@ MIDDLEWARE = [
     "saleor.core.middleware.currency",
     "saleor.core.middleware.site",
     "saleor.core.middleware.plugins",
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 INSTALLED_APPS = [
@@ -245,6 +246,8 @@ INSTALLED_APPS = [
     "saleor.webhook",
     "saleor.wishlist",
     "saleor.app",
+    # custom apps
+    'saleor.unurshop',
     # External apps
     "versatileimagefield",
     "django_measurement",
@@ -256,6 +259,7 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "phonenumber_field",
+    # 'debug_toolbar',
 ]
 
 
@@ -383,7 +387,8 @@ TEST_RUNNER = "tests.runner.PytestTestRunner"
 
 PLAYGROUND_ENABLED = get_bool_from_env("PLAYGROUND_ENABLED", True)
 
-ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
+ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS", "*"))
+# ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
 ALLOWED_GRAPHQL_ORIGINS = os.environ.get("ALLOWED_GRAPHQL_ORIGINS", "*")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

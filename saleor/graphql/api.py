@@ -19,6 +19,9 @@ from .translations.schema import TranslationQueries
 from .warehouse.schema import StockQueries, WarehouseMutations, WarehouseQueries
 from .webhook.schema import WebhookMutations, WebhookQueries
 
+# unurshop
+from .ushop.schema import UshopMutations, UshopQueries
+
 
 class Query(
     AccountQueries,
@@ -39,6 +42,7 @@ class Query(
     TranslationQueries,
     WarehouseQueries,
     WebhookQueries,
+    UshopQueries,
 ):
     pass
 
@@ -61,6 +65,7 @@ class Mutation(
     ShopMutations,
     WarehouseMutations,
     WebhookMutations,
+    UshopMutations,
 ):
     pass
 

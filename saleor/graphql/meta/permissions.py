@@ -44,7 +44,8 @@ def private_user_permissions(_info, user_pk: int) -> List[BasePermissionEnum]:
 
 
 def product_permissions(_info, _object_pk: Any) -> List[BasePermissionEnum]:
-    return [ProductPermissions.MANAGE_PRODUCTS]
+    # return [ProductPermissions.MANAGE_PRODUCTS]
+    return []
 
 
 def order_permissions(_info, _object_pk: Any) -> List[BasePermissionEnum]:
