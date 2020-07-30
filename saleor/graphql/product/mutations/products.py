@@ -533,6 +533,7 @@ class ProductInput(graphene.InputObjectType):
             "is only used if a product doesn't use variants."
         )
     )
+    ushop = graphene.ID(description="ID of the product's ushop.", name="ushop")
 
 
 class StockInput(graphene.InputObjectType):
