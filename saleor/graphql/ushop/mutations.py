@@ -50,7 +50,7 @@ class UshopInput(graphene.InputObjectType):
         description=("Ushop listiig zadlah selection")
     )
     productSelection = graphene.String(
-        description=("Ushop productiig zadlah slection")
+        description=("Ushop productiig zadlah selection")
     )
 
 

@@ -9,13 +9,11 @@ from versatileimagefield.fields import PPOIField, VersatileImageField
 from django.contrib.postgres.fields import JSONField
 from draftjs_sanitizer import clean_draft_js
 
-
 from ..seo.models import SeoModel, SeoModelTranslation
 from ..core.models import PublishableModel, PublishedQuerySet
 from ..core.db.fields import SanitizedJSONField
 
 DEFAULT_SHOP_ID = 1
-
 
 class Shop(SeoModel, PublishableModel):
     name = models.CharField(max_length=100)
@@ -38,28 +36,6 @@ class Shop(SeoModel, PublishableModel):
     rating_shuurhai = models.PositiveSmallIntegerField(null=True, blank=True)
     rating_product_rank = models.PositiveSmallIntegerField(null=True, blank=True)
 
-    shipment_fee = models.DecimalField(
-        max_digits=settings.DEFAULT_MAX_DIGITS,
-        decimal_places=settings.DEFAULT_DECIMAL_PLACES,
-        null=True,
-        blank=True
-    )
-    shipping_fee_yaraltai = models.DecimalField(
-        max_digits=settings.DEFAULT_MAX_DIGITS,
-        decimal_places=settings.DEFAULT_DECIMAL_PLACES,
-        null=True,
-        blank=True
-    )
-    shipping_fee_free = models.DecimalField(
-        max_digits=settings.DEFAULT_MAX_DIGITS,
-        decimal_places=settings.DEFAULT_DECIMAL_PLACES,
-        null=True,
-        blank=True
-    )
-
-    shipping_deliver_yaraltai = models.CharField(max_length=50, null=True, blank=True)
-    shipping_deliver_standart = models.CharField(max_length=50, null=True, blank=True)
-    shipping_deliver_free = models.CharField(max_length=50, null=True, blank=True)
     has_shipping_tax = models.BooleanField(default=False, null=True, blank=True)
     shipping_per_product = models.BooleanField(default=False, null=True, blank=True)
     open_graph = models.BooleanField(default=False, null=True, blank=True)
@@ -69,6 +45,14 @@ class Shop(SeoModel, PublishableModel):
 
     listSelection = models.TextField(blank=True, null=True)
     productSelection = models.TextField(blank=True, null=True)
+
+    shipping_product = models.ForeignKey(
+        to="product.Product",
+        related_name="shipping_product",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
 
 
 class Crawler(PublishableModel):
