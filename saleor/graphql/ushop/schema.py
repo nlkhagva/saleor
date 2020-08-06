@@ -1,0 +1,45 @@
+import graphene
+
+from ..core.fields import FilterInputConnectionField
+from .bulk_mutations import UshopBulkDelete, UshopBulkPublish
+from .mutations import UshopCreate, UshopDelete, UshopUpdate
+from .resolvers import resolve_ushop, resolve_ushopByLink, resolve_ushops
+from .sorters import UshopSortingInput
+from .types import Ushop
+from .filters import UshopFilterInput
+
+
+class UshopQueries(graphene.ObjectType):
+    ushop = graphene.Field(
+        Ushop,
+        id=graphene.Argument(graphene.ID),
+        description="Lookup a page by ID.",
+    )
+    ushopByLink = graphene.Field(
+        Ushop,
+        link=graphene.String()
+    )
+
+    ushops = FilterInputConnectionField(
+        Ushop,
+        sort_by=UshopSortingInput(description="Sort pages."),
+        filter=UshopFilterInput(description="Filtering options for pages."),
+        description="List of the ushop's.",
+    )
+
+    def resolve_ushop(self, info, id=None):
+        return resolve_ushop(info, id)
+
+    def resolve_ushopByLink(self, info, link=None):
+        return resolve_ushopByLink(info, link)
+
+    def resolve_ushops(self, info, query=None, **_kwargs):
+        return resolve_ushops(info, query=query)
+
+
+class UshopMutations(graphene.ObjectType):
+    ushop_create = UshopCreate.Field()
+    ushop_delete = UshopDelete.Field()
+    ushop_bulk_delete = UshopBulkDelete.Field()
+    ushop_bulk_publish = UshopBulkPublish.Field()
+    ushop_update = UshopUpdate.Field()

@@ -33,6 +33,8 @@ from ..discount.utils import calculate_discounted_price
 from ..seo.models import SeoModel, SeoModelTranslation
 from . import AttributeInputType
 
+from ..unurshop.models import Shop
+
 if TYPE_CHECKING:
     # flake8: noqa
     from prices import Money
@@ -233,6 +235,10 @@ class Product(SeoModel, ModelWithMetadata, PublishableModel):
     )
     name = models.CharField(max_length=250)
     slug = models.SlugField(max_length=255, unique=True, allow_unicode=True)
+
+    # ushop
+    ushop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
+
     description = models.TextField(blank=True)
     description_json = SanitizedJSONField(
         blank=True, default=dict, sanitizer=clean_draft_js

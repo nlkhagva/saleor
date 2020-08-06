@@ -60,7 +60,7 @@ class CheckoutLine(CountableDjangoObjectType):
     )
 
     class Meta:
-        only_fields = ["id", "quantity", "variant"]
+        only_fields = ["id", "quantity", "variant", "metadata"]
         description = "Represents an item in the checkout."
         interfaces = [graphene.relay.Node]
         model = models.CheckoutLine

@@ -538,6 +538,7 @@ class ProductInput(graphene.InputObjectType):
             "Note: this field is only used if a product doesn't use variants."
         )
     )
+    ushop = graphene.ID(description="ID of the product's ushop.", name="ushop")
 
 
 class StockInput(graphene.InputObjectType):
@@ -792,7 +793,8 @@ class ProductCreate(ModelMutation):
     class Meta:
         description = "Creates a new product."
         model = models.Product
-        permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        # permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        permissions = ()
         error_type_class = ProductError
         error_type_field = "product_errors"
 
@@ -1053,7 +1055,8 @@ class ProductUpdateMeta(UpdateMetaBaseMutation):
     class Meta:
         model = models.Product
         description = "Update public metadata for product."
-        permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        # permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        permissions = ()
         public = True
         error_type_class = ProductError
         error_type_field = "product_errors"
@@ -1134,7 +1137,8 @@ class ProductVariantCreate(ModelMutation):
     class Meta:
         description = "Creates a new variant for a product."
         model = models.ProductVariant
-        permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        # permissions = (ProductPermissions.MANAGE_PRODUCTS,)
+        permissions = ()
         error_type_class = ProductError
         error_type_field = "product_errors"
 
