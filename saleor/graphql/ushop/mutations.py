@@ -1,6 +1,5 @@
 import graphene
 from django.utils.text import slugify
-from graphql_jwt.decorators import staff_member_required
 
 from .types import Ushop
 from ..core.types import SeoInput, Upload
