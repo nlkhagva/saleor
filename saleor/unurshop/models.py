@@ -74,9 +74,12 @@ class Crawler(PublishableModel):
     productSelection = models.TextField(blank=True)
 
 
-# class GaduurPackage(PublishableModel):
-#     name = models.TextField(max_length=20, unique=True)
-#     shipping_type = models.PositiveSmallIntegerField(null=True, blank=True)
+class GaduurPackage(PublishableModel):
+    name = models.TextField(max_length=20, unique=True)
+    shipping_type = models.PositiveSmallIntegerField(null=True, blank=True)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+
 #     total_weight = models.DecimalField(
 #         max_digits=settings.DEFAULT_MAX_DIGITS,
 #         decimal_places=settings.DEFAULT_DECIMAL_PLACES,

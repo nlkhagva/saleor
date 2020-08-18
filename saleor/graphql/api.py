@@ -23,6 +23,7 @@ from .webhook.schema import WebhookMutations, WebhookQueries
 
 # unurshop
 from .ushop.schema import UshopMutations, UshopQueries
+from .gaduur.schema import GaduurQueries, GaduurMutations
 
 
 class Query(
@@ -46,6 +47,7 @@ class Query(
     WarehouseQueries,
     WebhookQueries,
     UshopQueries,
+    GaduurQueries,
 ):
     pass
 
@@ -70,6 +72,7 @@ class Mutation(
     WarehouseMutations,
     WebhookMutations,
     UshopMutations,
+    GaduurMutations,
 ):
     pass
 

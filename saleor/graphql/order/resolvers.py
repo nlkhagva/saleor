@@ -60,7 +60,8 @@ def resolve_homepage_events():
 
 def resolve_order_by_token(token):
     return (
-        models.Order.objects.exclude(status=OrderStatus.DRAFT)
+        # models.Order.objects.exclude(status=OrderStatus.DRAFT)
+        models.Order.objects
         .filter(token=token)
         .first()
     )
