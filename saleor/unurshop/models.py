@@ -199,3 +199,5 @@ class GaduurPackage(PublishableModel):
 #     received_count = models.IntegerField(null=True, blank=True)
 #     hot_count = models.IntegerField(null=True, blank=True)
 #     huduu_count = models.IntegerField(null=True, blank=True)
+class Package:
+    pass 
