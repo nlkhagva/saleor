@@ -1,6 +1,6 @@
 import django_filters
 
-from ...unurshop.models import Shop
+from ...unurshop.ushop.models import Shop
 from ..core.types import FilterInputObjectType
 from ..utils.filters import filter_by_query_param
 

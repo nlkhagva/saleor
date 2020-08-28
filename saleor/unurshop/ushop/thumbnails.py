@@ -1,5 +1,5 @@
-from ..celeryconf import app
-from ..core.utils import create_thumbnails
+from ...celeryconf import app
+from ...core.utils import create_thumbnails
 from .models import Shop
 
 

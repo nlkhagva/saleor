@@ -11,7 +11,7 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
     ModelDeleteMutation,
     ModelMutation,
 )
-from ...unurshop import models
+from ...unurshop.package import models
 
 
 class GaduurInput(graphene.InputObjectType):

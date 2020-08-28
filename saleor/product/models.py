@@ -33,7 +33,7 @@ from ..discount.utils import calculate_discounted_price
 from ..seo.models import SeoModel, SeoModelTranslation
 from . import AttributeInputType
 
-from ..unurshop.models import Shop
+from ..unurshop.ushop.models import Shop
 
 if TYPE_CHECKING:
     # flake8: noqa

@@ -1,7 +1,7 @@
 import graphene
 from graphene import relay
 
-from ...unurshop import models
+from ...unurshop.ushop import models
 
 from ..core.connection import CountableDjangoObjectType
 from ..core.types import (

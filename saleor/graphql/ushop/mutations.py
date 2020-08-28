@@ -11,8 +11,8 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
     ModelDeleteMutation,
     ModelMutation,
 )
-from ...unurshop import models
-from ...unurshop.thumbnails import create_ushop_logo_image_thumbnails
+from ...unurshop.ushop import models
+from ...unurshop.ushop.thumbnails import create_ushop_logo_image_thumbnails
 
 
 class UshopInput(graphene.InputObjectType):

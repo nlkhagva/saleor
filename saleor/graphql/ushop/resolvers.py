@@ -1,6 +1,6 @@
 import graphene
 
-from ...unurshop import models
+from ...unurshop.ushop import models
 from .types import Ushop
 import tldextract
 

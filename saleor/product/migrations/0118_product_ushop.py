@@ -7,14 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('unurshop', '0001_initial'),
+        # ('unurshop', '0001_initial'),
         ('product', '0117_auto_20200423_0737'),
     ]
 
-    operations = [
-        migrations.AddField(
-            model_name='product',
-            name='ushop',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='unurshop.Shop'),
-        ),
-    ]
+    # operations = [
+    #     migrations.AddField(
+    #         model_name='product',
+    #         name='ushop',
+    #         field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ushop.Shop'),
+    #     ),
+    # ]

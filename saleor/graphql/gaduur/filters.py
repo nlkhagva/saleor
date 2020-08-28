@@ -1,6 +1,6 @@
 import django_filters
 
-from ...unurshop.models import GaduurPackage
+from ...unurshop.package.models import GaduurPackage
 from ..core.types import FilterInputObjectType
 from ..utils.filters import filter_by_query_param
 

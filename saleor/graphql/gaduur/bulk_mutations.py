@@ -1,6 +1,6 @@
 import graphene
 
-from ...unurshop import models
+from ...unurshop.package import models
 from ..core.mutations import BaseBulkMutation, ModelBulkDeleteMutation
 
 
