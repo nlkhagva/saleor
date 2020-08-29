@@ -1,10 +1,13 @@
 import graphene
 from django.utils.text import slugify
+from django.db import transaction
 
-from .types import Gaduur
+from .types import Gaduur, Package
 from ..core.types import SeoInput, Upload
 from ..core.types.common import SeoInput
 from ..core.utils import clean_seo_fields, validate_image_file
+from ..core.scalars import Decimal
+from ..account.types import AddressInput
 
 from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation,
     BaseMutation,
@@ -12,6 +15,8 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
     ModelMutation,
 )
 from ...unurshop.package import models
+
+
 
 
 class GaduurInput(graphene.InputObjectType):
@@ -74,3 +79,58 @@ class GaduurDelete(ModelDeleteMutation):
         description = "Deletes a Gaduur."
         model = models.GaduurPackage
         permissions = ("page.manage_pages",)
+
+
+
+
+class PackageLineInput(graphene.InputObjectType):
+    name = graphene.String(description="package line name")
+    quantity = graphene.Int(required=True, description="quantity ")
+    unit_price_amount = Decimal(required=True,description="line dahi negjin une")
+    orderline_id = graphene.ID(description="Orderline id")
+
+
+class PackageInput(graphene.InputObjectType): #AddressInput
+    name = graphene.String(desciption="Package number")
+    lines = graphene.List(PackageLineInput, description="package lines")
+    shipping_address_id = graphene.ID(description="shipping address id")
+    sender_address_id = graphene.ID(description="sender address id")
+    width = Decimal(description="urgun")
+    height = Decimal(description="under")
+    length = Decimal(description="urt")
+    net_weight = Decimal(description="бодит жин")
+    gross_weight = Decimal(description="оврийн жин")
+    total_gross_amount = Decimal(description="Тээврийн үнэ")
+
+
+class PackageCreate(ModelMutation):
+    package = graphene.Field(Package)
+
+    class Arguments:
+        input = PackageInput()
+
+    class Meta:
+        description = "Create a new package"
+        model = models.Package
+
+
+    @transaction.atomic()
+    def save(cls, info, instance: models.Package, cleaned_input):
+        instance.save()
+
+    @classmethod
+    def clean_input(cls, info, instace: models.Package, data, input_cls=None):
+        cleaned_input = super().clean_input(info, instance, data)
+        user = info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+
+        package = models.Package()
+
+        cleaned_input = cls.clean_input(info, package, data.get("input") )
+        package = cls.construct_instance(package, cleaned_input)
+        cls.clean_instance(info, package)
+        cls.save(info, package, cleaned_input)
+

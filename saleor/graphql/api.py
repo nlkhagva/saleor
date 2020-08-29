@@ -22,8 +22,8 @@ from .warehouse.schema import StockQueries, WarehouseMutations, WarehouseQueries
 from .webhook.schema import WebhookMutations, WebhookQueries
 
 # unurshop
-# from .ushop.schema import UshopMutations, UshopQueries
-# from .gaduur.schema import GaduurQueries, GaduurMutations
+from .ushop.schema import UshopMutations, UshopQueries
+from .package.schema import GaduurQueries, GaduurMutations
 
 
 class Query(
@@ -46,8 +46,8 @@ class Query(
     TranslationQueries,
     WarehouseQueries,
     WebhookQueries,
-    # UshopQueries,
-    # GaduurQueries,
+    UshopQueries,
+    GaduurQueries,
 ):
     pass
 
@@ -71,8 +71,8 @@ class Mutation(
     ShopMutations,
     WarehouseMutations,
     WebhookMutations,
-    # UshopMutations,
-    # GaduurMutations,
+    UshopMutations,
+    GaduurMutations,
 ):
     pass
 

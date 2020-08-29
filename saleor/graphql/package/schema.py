@@ -10,13 +10,13 @@ from .filters import GaduurFilterInput
 
 
 class GaduurQueries(graphene.ObjectType):
+    #####################
+    ####  gaduur dagavar
     gaduur = graphene.Field(
         Gaduur,
         id=graphene.Argument(graphene.ID),
         description="Lookup a page by ID.",
     )
-
-
     gaduurs = FilterInputConnectionField(
         Gaduur,
         sort_by=GaduurSortingInput(description="Sort pages."),
@@ -26,11 +26,10 @@ class GaduurQueries(graphene.ObjectType):
 
     def resolve_gaduur(self, info, id=None):
         return resolve_gaduur(info, id)
-
-
-
     def resolve_gaduurs(self, info, query=None, **_kwargs):
         return resolve_gaduurs(info, query=query)
+
+
 
 
 class GaduurMutations(graphene.ObjectType):

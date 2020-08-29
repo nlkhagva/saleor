@@ -11,7 +11,7 @@ from ..core.types import (
 
 class Gaduur(CountableDjangoObjectType):
     class Meta:
-        description = """A static page that can be manually added by a shop
+        description = """A static page that can be manually added by a gaduur
                operator through the dashboard."""
         only_fields = [
             "id",
@@ -32,4 +32,13 @@ class Gaduur(CountableDjangoObjectType):
     @staticmethod
     def resolve_is_visible(root: models.GaduurPackage, _info):
         return root.is_published
+
+class Package(CountableDjangoObjectType):
+    class Meta:
+        description =" package "
+        only_fields = [
+
+        ]
+        interfaces = [relay.Node]
+        model = models.Package
 

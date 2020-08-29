@@ -74,6 +74,7 @@ class GaduurPackage(PublishableModel):
 
 class Package(models.Model):
     created = models.DateTimeField(default=now, editable=False)
+    name = models.CharField(max_length=50, null=True, blank=True)
     status = models.CharField(max_length=32, default=PackageStatus)
     gaduur = models.ForeignKey(
         GaduurPackage,
@@ -153,7 +154,7 @@ class PackageLine(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    order_line = models.ForeignKey(
+    orderline = models.ForeignKey(
         OrderLine,
         related_name="+",
         null=True,

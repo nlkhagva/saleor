@@ -1,14 +1,14 @@
 import graphene
 
-from ...unurshop import models
-from .types import Gaduur
+from ...unurshop.package import models
+from .types import Gaduur, Package
 import tldextract
 
 USHOP_SEARCH_FIELDS = ("description", "name", "url")
 
 
 def resolve_gaduur(info, gaduur_id=None):
-    assert gaduur_id, "No gaduur ID or slug provided."
+    assert gaduur_id, "No gaduur ID provided."
     user = info.context.user
 
     gaduur = graphene.Node.get_node_from_global_id(info, gaduur_id, Gaduur)
@@ -26,3 +26,15 @@ def resolve_gaduur(info, gaduur_id=None):
 def resolve_gaduurs(info, query):
     user = info.context.user
     return models.GaduurPackage.objects.visible_to_user(user)
+
+
+def resolve_package(info, global_id = None):
+    assert global_id, "no id "
+    user = info.context.user
+
+    package = graphene.Node.get_node_from_global_id(info, global_id, Package)
+
+    return package
+
+def resolve_packages(info, query):
+    return models.Package.objects.all()
