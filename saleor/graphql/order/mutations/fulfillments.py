@@ -52,6 +52,8 @@ class OrderFulfillInput(graphene.InputObjectType):
     notify_customer = graphene.Boolean(
         description="If true, send an email notification to the customer."
     )
+    tracking_number = graphene.String(description="tracking code => order number")
+    uk_date = graphene.Date(description="date")
 
 
 class FulfillmentUpdateTrackingInput(graphene.InputObjectType):
@@ -241,7 +243,9 @@ class OrderFulfill(BaseMutation):
 
         try:
             fulfillments = create_fulfillments(
-                user, order, dict(lines_for_warehouses), notify_customer
+                user, order, dict(lines_for_warehouses), notify_customer,
+                cleaned_input.get("uk_date"),
+                cleaned_input.get("tracking_number")
             )
         except InsufficientStock as exc:
             order_line_global_id = graphene.Node.to_global_id(

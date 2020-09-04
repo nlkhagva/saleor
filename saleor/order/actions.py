@@ -324,6 +324,8 @@ def create_fulfillments(
     order: "Order",
     fulfillment_lines_for_warehouses: Dict,
     notify_customer: bool = True,
+    uk_date = "2020-09-03",
+    tracking_number = ""
 ) -> List[Fulfillment]:
     """Fulfill order.
 
@@ -359,7 +361,7 @@ def create_fulfillments(
     fulfillments: List[Fulfillment] = []
     fulfillment_lines: List[FulfillmentLine] = []
     for warehouse_pk in fulfillment_lines_for_warehouses:
-        fulfillment = Fulfillment.objects.create(order=order)
+        fulfillment = Fulfillment.objects.create(order=order, uk_date=uk_date, tracking_number=tracking_number)
         fulfillments.append(fulfillment)
         fulfillment_lines.extend(
             _create_fulfillment_lines(

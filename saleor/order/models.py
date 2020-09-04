@@ -438,6 +438,7 @@ class Fulfillment(ModelWithMetadata):
         choices=FulfillmentStatus.CHOICES,
     )
     tracking_number = models.CharField(max_length=255, default="", blank=True)
+    uk_date = models.DateField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

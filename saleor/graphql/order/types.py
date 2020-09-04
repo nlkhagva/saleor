@@ -205,6 +205,7 @@ class Fulfillment(CountableDjangoObjectType):
             "id",
             "created",
             "status",
+            "uk_date",
             "tracking_number",
         ]
 
