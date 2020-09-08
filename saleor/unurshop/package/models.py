@@ -19,7 +19,7 @@ from . import PackageStatus
 
 class GaduurPackage(PublishableModel):
     name = models.TextField(max_length=20, unique=True)
-    shipping_type = models.PositiveSmallIntegerField(null=True, blank=True)
+    shipping_type = models.TextField(max_length=10, blank=True, null=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
 

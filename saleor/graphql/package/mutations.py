@@ -5,7 +5,7 @@ from django.db import transaction
 from .types import Gaduur, Package
 from ..core.types import SeoInput, Upload
 from ..core.types.common import SeoInput
-from ..core.utils import clean_seo_fields, validate_image_file
+from ..core.utils import validate_image_file
 from ..core.scalars import Decimal
 from ..account.types import AddressInput
 
@@ -21,6 +21,7 @@ from ...unurshop.package import models
 
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
+    shipping_type = graphene.String(description="shipping type")
     is_published = graphene.Boolean(
         description="Determines if Gaduur is visible in the storefront"
     )
@@ -50,7 +51,6 @@ class GaduurCreate(ModelMutation):
             image_data = info.context.FILES.get(data["logo_image"])
             validate_image_file(image_data, "logo_image")
 
-        clean_seo_fields(cleaned_input)
         return cleaned_input
 
     @classmethod
