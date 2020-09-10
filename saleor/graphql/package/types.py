@@ -35,9 +35,23 @@ class Gaduur(CountableDjangoObjectType):
 
 class Package(CountableDjangoObjectType):
     class Meta:
-        description =" package "
+        description ="package"
         only_fields = [
-
+            "id",
+            "name",
+            "status",
+            "gaduur",
+            "user",
+            "shipping_address",
+            "sender_address",
+            "upostPK",
+            "net_weight",
+            "gross_weight",
+            "width",
+            "height",
+            "length",
+            "currency",
+            "total_gross_amount"
         ]
         interfaces = [relay.Node]
         model = models.Package
