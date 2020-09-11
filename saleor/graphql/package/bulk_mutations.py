@@ -11,8 +11,17 @@ class GaduurBulkDelete(ModelBulkDeleteMutation):
         )
 
     class Meta:
-        description = "Deletes gad."
+        description = "Deletes gaduur."
         model = models.GaduurPackage
         permissions = ("page.manage_pages",)
 
+class PackageBulkDelete(ModelBulkDeleteMutation):
+    class Arguments:
+        ids = graphene.List(
+            graphene.ID, required=True, description="list of package IDs to delete"
+        )
+    class Meta:
+        description="Delete packages"
+        model = models.Package
+        permissions = ("page.manage_pages")
 

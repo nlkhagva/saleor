@@ -16,9 +16,6 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
 )
 from ...unurshop.package import models
 
-
-
-
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
     shipping_type = graphene.String(description="shipping type")
@@ -104,33 +101,56 @@ class PackageInput(graphene.InputObjectType): #AddressInput
 
 
 class PackageCreate(ModelMutation):
-    package = graphene.Field(Package)
-
     class Arguments:
         input = PackageInput()
 
     class Meta:
         description = "Create a new package"
         model = models.Package
-
-
-    @transaction.atomic()
-    def save(cls, info, instance: models.Package, cleaned_input):
-        instance.save()
+        permissions=("page.manage_pages")
 
     @classmethod
-    def clean_input(cls, info, instace: models.Package, data, input_cls=None):
+    def clean_input(cls, info, instance, data):
         cleaned_input = super().clean_input(info, instance, data)
-        user = info.context.user
+        return cleaned_input
 
-    @classmethod
-    def perform_mutation(cls, _root, info, **data):
-        user = info.context.user
+    # @transaction.atomic()
+    # def save(cls, info, instance: models.Package, cleaned_input):
+    #     instance.save()
 
-        package = models.Package()
+    # @classmethod
+    # def clean_input(cls, info, instace: models.Package, data, input_cls=None):
+    #     cleaned_input = super().clean_input(info, instance, data)
+    #     user = info.context.user
 
-        cleaned_input = cls.clean_input(info, package, data.get("input") )
-        package = cls.construct_instance(package, cleaned_input)
-        cls.clean_instance(info, package)
-        cls.save(info, package, cleaned_input)
+    # @classmethod
+    # def perform_mutation(cls, _root, info, **data):
+    #     user = info.context.user
 
+    #     package = models.Package()
+
+    #     cleaned_input = cls.clean_input(info, package, data.get("input") )
+    #     package = cls.construct_instance(package, cleaned_input)
+    #     cls.clean_instance(info, package)
+    #     cls.save(info, package, cleaned_input)
+
+class PackageUpdate(PackageCreate):
+    class Arguments:
+        id = graphene.ID(required=True, description="package id")
+        input = PackageInput(
+            required=True, description="fields required to update a package"
+        )
+
+    class Meta:
+        description = "updates an existing package"
+        model = models.Package
+        permissions=("page.manage_pages")
+
+class PackageDelete(ModelDeleteMutation):
+    class Arguments:
+        id = graphene.ID(required=True, description="id of package to delete")
+
+    class Meta:
+        description="delete package"
+        model = models.Package
+        permissions=("page.manage_pages")

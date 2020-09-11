@@ -1,5 +1,6 @@
 class PackageStatus:
     DRAFT = "draft"
+    NEW = "new"
     SHIPPING = "shipping"
     INMONGOLIA = "inmongolia"
     RECEIVED = "received"
@@ -7,6 +8,7 @@ class PackageStatus:
     CANCELED = "canceled"
 
     CHOICES = [
+        (NEW, "New"),
         (DRAFT, "Draft"),
         (SHIPPING, "Shipping"),
         (INMONGOLIA, "In Mongolia"),
