@@ -361,7 +361,14 @@ def create_fulfillments(
     fulfillments: List[Fulfillment] = []
     fulfillment_lines: List[FulfillmentLine] = []
     for warehouse_pk in fulfillment_lines_for_warehouses:
-        fulfillment = Fulfillment.objects.create(order=order, uk_date=uk_date, tracking_number=tracking_number)
+        fulfillment = Fulfillment.objects.create(
+            order=order,
+            uk_date=uk_date,
+            tracking_number=tracking_number,
+            firstname=order.shipping_address.first_name,
+            lastname=order.shipping_address.last_name,
+            user=order.user
+        )
         fulfillments.append(fulfillment)
         fulfillment_lines.extend(
             _create_fulfillment_lines(

@@ -25,7 +25,7 @@ from ..discount.models import Voucher
 from ..giftcard.models import GiftCard
 from ..payment import ChargeStatus, TransactionKind
 from ..shipping.models import ShippingMethod
-from . import FulfillmentStatus, OrderEvents, OrderStatus
+from . import FulfillmentStatus, OrderEvents, OrderStatus, FulfillmentUshopStatus
 
 
 class OrderQueryset(models.QuerySet):
@@ -439,6 +439,21 @@ class Fulfillment(ModelWithMetadata):
     )
     tracking_number = models.CharField(max_length=255, default="", blank=True)
     uk_date = models.DateField(null=True, blank=True)
+    firstname = models.CharField(max_length=256, default="", blank=True)
+    lastname = models.CharField(max_length=256, default="", blank=True)
+    ushop_status = models.CharField(
+        max_length=32,
+        default=FulfillmentUshopStatus.NEW,
+        choices=FulfillmentUshopStatus.CHOICES
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        null=True,
+        related_name="ordersfulfillment",
+        on_delete=models.SET_NULL,
+    )
+
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
