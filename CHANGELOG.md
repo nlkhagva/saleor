@@ -15,6 +15,11 @@ All notable, unreleased changes to this project will be documented in this file.
 - Add `change_currency` command - #6016 by @maarcingebala
 - Send a confirmation email when the order is canceled or refunded - #6017
 - Add `TotalPrice` to `OrderLine` - #6068 @fowczarek
+- No secure cookie in debug mode - #6082 by @patrys, @orzechdev
+- Add searchable and available for purchase flags to product - #6060 by @IKarbowiak
+- Add `PRODUCT_UPDATED` webhook event - #6100 by @tomaszszymanski129
+- Search orders by graphql PaymentID - #6135 by @korycins
+- Search orders by custom key provided by payment gateway - #6135 by @korycins
 
 ### Breaking Changes
 
@@ -39,6 +44,18 @@ All notable, unreleased changes to this project will be documented in this file.
 - Update google merchant to get tax rate based by plugin manager - #5823 by @gabmartinez
 - Allow unicode in slug fields - #5877 by @IKarbowiak
 - Fix empty plugin object result after PluginUpdate mutation - #5968 by @gabmartinez
+- Allow to finish checkout when price amount is 0 - #6064 by @IKarbowiak
+- Fix incorrect tax calculation for Avatax - #6035 by @korycins
+- Fix incorrect calculation of subtotal with active Avatax - #6035 by @korycins
+- Fix incorrect assigment of tax_code for Avatax - #6035 by @korycins
+- Do not allow negative product price - #6091 by @IKarbowiak
+- Handle None as attribute value - #6092 by @IKarbowiak
+- Fix for calling order_created before the order was saved - #6095 by @korycins
+- Update default decimal places - #6098 by @IKarbowiak
+- Avoid assigning the same pictures twice to a variant - #6112 by @IKarbowiak
+- Fix crashing system when avalara is improperly configured - #6117 by @IKarbowiak
+- Fix for failing finalising draft order - #6133 by @korycins
+- Remove corresponding draft order lines when variant is removing - #6119 by @IKarbowiak
 
 ## 2.10.2
 

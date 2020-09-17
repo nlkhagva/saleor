@@ -218,6 +218,7 @@ def create_products(products_data, placeholder_dir, create_images):
         defaults["weight"] = get_weight(defaults["weight"])
         defaults["category_id"] = defaults.pop("category")
         defaults["product_type_id"] = defaults.pop("product_type")
+
         product, _ = Product.objects.update_or_create(pk=pk, defaults=defaults)
 
         if create_images:
@@ -518,7 +519,11 @@ def create_fulfillments(order):
 
 
 def create_fake_order(discounts, max_order_lines=5):
-    customers = User.objects.filter(is_superuser=False).order_by("?")
+    customers = (
+        User.objects.filter(is_superuser=False)
+        .exclude(default_billing_address=None)
+        .order_by("?")
+    )
     customer = random.choice([None, customers.first()])
 
     if customer:
