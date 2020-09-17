@@ -558,12 +558,12 @@ class ProductInput(graphene.InputObjectType):
         )
     )
 
-
 class StockInput(graphene.InputObjectType):
     warehouse = graphene.ID(
         required=True, description="Warehouse in which stock is located."
     )
     quantity = graphene.Int(description="Quantity of items available for sell.")
+
 
 
 class ProductCreateInput(ProductInput):
@@ -580,7 +580,6 @@ class ProductCreateInput(ProductInput):
         ),
         required=False,
     )
-
 
 T_INPUT_MAP = List[Tuple[models.Attribute, List[str]]]
 T_INSTANCE = Union[models.Product, models.ProductVariant]
