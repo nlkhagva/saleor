@@ -49,9 +49,10 @@ from .resolvers import (
     resolve_order_by_token,
     resolve_orders,
     resolve_orders_total,
+    resolve_ready2shipping
 )
 from .sorters import OrderSortingInput
-from .types import Order, OrderEvent
+from .types import Order, OrderEvent, Fulfillment
 
 
 class OrderFilterInput(FilterInputObjectType):
@@ -121,6 +122,13 @@ class OrderQueries(graphene.ObjectType):
         token=graphene.Argument(UUID, description="The order's token.", required=True),
     )
 
+    ready2shipping = graphene.Field(
+        Fulfillment,
+        description="shipping ready",
+        id=graphene.Argument(graphene.ID, description="ID of the fulfillment."),
+        ordernumber=graphene.String(description="uk shop ordernumber"),
+    )
+
     @permission_required(OrderPermissions.MANAGE_ORDERS)
     def resolve_homepage_events(self, *_args, **_kwargs):
         return resolve_homepage_events()
@@ -143,6 +151,11 @@ class OrderQueries(graphene.ObjectType):
 
     def resolve_order_by_token(self, _info, token):
         return resolve_order_by_token(token)
+
+    @permission_required(OrderPermissions.MANAGE_ORDERS)
+    def resolve_ready2shipping(self, info, id=None, ordernumber=None):
+        return resolve_ready2shipping(info, id, ordernumber)
+
 
 
 class OrderMutations(graphene.ObjectType):

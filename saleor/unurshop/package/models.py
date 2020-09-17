@@ -12,7 +12,7 @@ from ...seo.models import SeoModel, SeoModelTranslation
 from ...core.models import PublishableModel, PublishedQuerySet
 
 from ...account.models import Address
-from ...order.models import OrderLine
+from ...order.models import FulfillmentLine
 
 from . import PackageStatus
 
@@ -154,8 +154,8 @@ class PackageLine(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    orderline = models.ForeignKey(
-        OrderLine,
+    fulfillmentline = models.ForeignKey(
+        FulfillmentLine,
         related_name="+",
         null=True,
         blank=True,

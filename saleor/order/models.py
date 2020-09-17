@@ -26,6 +26,7 @@ from ..giftcard.models import GiftCard
 from ..payment import ChargeStatus, TransactionKind
 from ..shipping.models import ShippingMethod
 from . import FulfillmentStatus, OrderEvents, OrderStatus, FulfillmentUshopStatus
+from functools import reduce
 
 
 class OrderQueryset(models.QuerySet):
@@ -484,9 +485,15 @@ class Fulfillment(ModelWithMetadata):
     def get_total_quantity(self):
         return sum([line.quantity for line in self])
 
+    def get_line_status(self):
+        # angli dahi hurgelt hasav
+        tmp = filter(lambda x: x.order_line.variant.product.product_type_id != 16, self)
+        return reduce(lambda x,y: x if x == y else "diff", [x.ushop_status for x in tmp] )
+
     @property
     def is_tracking_number_url(self):
         return bool(match(r"^[-\w]+://", self.tracking_number))
+
 
 
 class FulfillmentLine(models.Model):
@@ -504,6 +511,14 @@ class FulfillmentLine(models.Model):
         blank=True,
         null=True,
     )
+    ushop_status = models.CharField(
+        max_length=32,
+        default=FulfillmentUshopStatus.NEW,
+        choices=FulfillmentUshopStatus.CHOICES
+    )
+    changed_date = models.DateField(blank=True, null=True, auto_now=True)
+    soon_date = models.DateField(blank=True, null=True)
+
 
 
 class OrderEvent(models.Model):

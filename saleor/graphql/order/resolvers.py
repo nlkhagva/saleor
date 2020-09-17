@@ -65,3 +65,14 @@ def resolve_order_by_token(token):
         .filter(token=token)
         .first()
     )
+
+def resolve_ready2shipping(info, global_page_id=None, ordernumber=None):
+    assert global_page_id or ordernumber, "No page ID or slug provided."
+    user = info.context.user
+
+    if ordernumber is not None:
+        fulfill = models.Fulfillment.objects.filter(status="fulfilled").filter(tracking_number=ordernumber).first()
+    else:
+        _type, fulfill_pk = graphene.Node.from_global_id(global_page_id)
+        fulfill = models.Fulfillment.objects.filter(pk=fulfill_pk).first()
+    return fulfill

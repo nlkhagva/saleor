@@ -9,6 +9,7 @@ from ...core.taxes import display_gross_prices
 from ...graphql.utils import get_user_or_app_from_context
 from ...order import OrderStatus, models
 from ...order.models import FulfillmentStatus
+from ...order import FulfillmentUshopStatus
 from ...order.utils import get_order_country, get_valid_shipping_methods_for_order
 from ...plugins.manager import get_plugins_manager
 from ...product.templatetags.product_images import get_product_image_thumbnail
@@ -30,6 +31,7 @@ from ..warehouse.types import Warehouse
 from .enums import OrderEventsEmailsEnum, OrderEventsEnum
 from .utils import validate_draft_order
 
+from django.db.models import Q
 
 class OrderEventOrderLineObject(graphene.ObjectType):
     quantity = graphene.Int(description="The variant quantity.")
@@ -178,7 +180,7 @@ class FulfillmentLine(CountableDjangoObjectType):
         description = "Represents line of the fulfillment."
         interfaces = [relay.Node]
         model = models.FulfillmentLine
-        only_fields = ["id", "quantity"]
+        only_fields = ["id", "quantity", "ushop_status", "changed_date", "soon_date"]
 
     @staticmethod
     def resolve_order_line(root: models.FulfillmentLine, _info):
@@ -195,6 +197,9 @@ class Fulfillment(CountableDjangoObjectType):
         required=False,
         description=("Warehouse from fulfillment was fulfilled."),
     )
+    others2shipping = graphene.List(
+        lambda: Fulfillment, description="list of other fullfilment"
+    )
 
     class Meta:
         description = "Represents order fulfillment."
@@ -207,6 +212,8 @@ class Fulfillment(CountableDjangoObjectType):
             "status",
             "uk_date",
             "tracking_number",
+            "ushop_status",
+            "order"
         ]
 
     @staticmethod
@@ -230,6 +237,10 @@ class Fulfillment(CountableDjangoObjectType):
     @staticmethod
     def resolve_meta(root: models.Fulfillment, _info):
         return resolve_meta(root, _info)
+
+    @staticmethod
+    def resolve_others2shipping(root: models.Fulfillment, _info):
+        return models.Fulfillment.objects.filter(Q(user_id = root.user_id) & Q(firstname=root.firstname) & Q(lastname=root.lastname)).filter(status="fulfilled").filter(Q(ushop_status=FulfillmentUshopStatus.NEW) | Q(ushop_status=FulfillmentUshopStatus.ATUK)).exclude(id=root.id)
 
 
 class OrderLine(CountableDjangoObjectType):
@@ -255,6 +266,9 @@ class OrderLine(CountableDjangoObjectType):
     )
     translated_variant_name = graphene.String(
         required=True, description="Variant name in the customer's language"
+    )
+    order_id = graphene.Int(
+        description="orderid_integer"
     )
 
     class Meta:
@@ -299,6 +313,10 @@ class OrderLine(CountableDjangoObjectType):
     @staticmethod
     def resolve_translated_variant_name(root: models.OrderLine, _info):
         return root.translated_variant_name
+
+    @staticmethod
+    def resolve_order_id(root: models.OrderLine, _info):
+        return root.order_id
 
 
 class Order(CountableDjangoObjectType):

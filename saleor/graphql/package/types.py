@@ -33,7 +33,19 @@ class Gaduur(CountableDjangoObjectType):
     def resolve_is_visible(root: models.GaduurPackage, _info):
         return root.is_published
 
+class PackageLine(CountableDjangoObjectType):
+    class Meta:
+        description = "Represents line of the fulfillment."
+        interfaces = [relay.Node]
+        model = models.PackageLine
+        only_fields = ["id", "name", "quantity", "currency", "unit_price_amount", "fulfillmentline"]
+
+
+
 class Package(CountableDjangoObjectType):
+    lines = graphene.List(
+        PackageLine, description="List of lines for the fulfillment."
+    )
     class Meta:
         description ="package"
         only_fields = [
@@ -51,8 +63,11 @@ class Package(CountableDjangoObjectType):
             "height",
             "length",
             "currency",
-            "total_gross_amount"
+            "total_gross_amount",
+            "lines"
         ]
         interfaces = [relay.Node]
         model = models.Package
 
+    def resolve_lines(root: models.Package, _info):
+        return root.lines.all()

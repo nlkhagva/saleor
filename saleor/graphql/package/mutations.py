@@ -15,6 +15,8 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
     ModelMutation,
 )
 from ...unurshop.package import models
+from ...order.models import FulfillmentLine
+from ...order import FulfillmentUshopStatus
 
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
@@ -84,7 +86,7 @@ class PackageLineInput(graphene.InputObjectType):
     name = graphene.String(description="package line name")
     quantity = graphene.Int(required=True, description="quantity ")
     unit_price_amount = Decimal(required=True,description="line dahi negjin une")
-    orderline_id = graphene.ID(description="Orderline id")
+    fulfillmentline_id = graphene.ID(description="fulfillmentLine id")
 
 
 class PackageInput(graphene.InputObjectType): #AddressInput
@@ -109,19 +111,58 @@ class PackageCreate(ModelMutation):
         model = models.Package
         permissions=("page.manage_pages")
 
-    @classmethod
-    def clean_input(cls, info, instance, data):
-        cleaned_input = super().clean_input(info, instance, data)
-        return cleaned_input
+    # @classmethod
+    # def clean_input(cls, info, instance, data):
+    #     cleaned_input = super().clean_input(info, instance, data)
+    #     return cleaned_input
 
-    # @transaction.atomic()
-    # def save(cls, info, instance: models.Package, cleaned_input):
-    #     instance.save()
+    @classmethod
+    def save_lines (cls, instance: models.Package, cleaned_input: dict):
+        lines = cleaned_input.get("lines")
+        fulfillments = []
+
+        for line in lines:
+            _type, fullfillment_pk = graphene.Node.from_global_id(line.get("fulfillmentline_id"))
+            packageLine = instance.lines.create(
+                name=line.get("name"),
+                quantity=line.get("quantity"),
+                unit_price_amount=line.get("unit_price_amount"),
+                fulfillmentline_id=fullfillment_pk
+            )
+            fline = FulfillmentLine.objects.get(pk=fullfillment_pk)
+            fline.ushop_status = FulfillmentUshopStatus.SHIPPING
+            fline.save()
+
+        #     try:
+        #         index = fulfillments.index(fline.fulfillment)
+        #     except:
+        #         fulfillments.append(fline.fulfillment)
+
+        # for fulfillment in fulfillments:
+        #     status = fulfillment.get_line_status()
+        #     if status != "diff":
+        #         fulfillment.ushop_status = status
+        #         fulfillment.save()
+
+
+    @classmethod
+    @transaction.atomic()
+    def save(cls, info, instance: models.Package, cleaned_input):
+        lines = cleaned_input.get("lines")
+        instance.save()
+        cls.save_lines(instance, cleaned_input)
 
     # @classmethod
     # def clean_input(cls, info, instace: models.Package, data, input_cls=None):
     #     cleaned_input = super().clean_input(info, instance, data)
     #     user = info.context.user
+    #     lines = data.pop("lines", None)
+
+    #     if lines:
+    #         for line in lines:
+
+
+
 
     # @classmethod
     # def perform_mutation(cls, _root, info, **data):
@@ -129,10 +170,11 @@ class PackageCreate(ModelMutation):
 
     #     package = models.Package()
 
-    #     cleaned_input = cls.clean_input(info, package, data.get("input") )
     #     package = cls.construct_instance(package, cleaned_input)
     #     cls.clean_instance(info, package)
     #     cls.save(info, package, cleaned_input)
+
+    #     return PackageCreate(package=package, created=Trye)
 
 class PackageUpdate(PackageCreate):
     class Arguments:
