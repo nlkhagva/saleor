@@ -63,7 +63,10 @@ class Package(CountableDjangoObjectType):
             "height",
             "length",
             "currency",
-            "total_gross_amount",
+            "perkg_amount",
+            "net_or_gross",
+            "perkg_price",
+            "get_total",
             "lines"
         ]
         interfaces = [relay.Node]

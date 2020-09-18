@@ -99,7 +99,9 @@ class PackageInput(graphene.InputObjectType): #AddressInput
     length = Decimal(description="urt")
     net_weight = Decimal(description="бодит жин")
     gross_weight = Decimal(description="оврийн жин")
-    total_gross_amount = Decimal(description="Тээврийн үнэ")
+    perkg_amount = Decimal(description="Тээврийн үнэ")
+    net_or_gross = graphene.String(description="net or gross")
+    gaduur = graphene.ID(description="gaduur")
 
 
 class PackageCreate(ModelMutation):
@@ -160,9 +162,6 @@ class PackageCreate(ModelMutation):
 
     #     if lines:
     #         for line in lines:
-
-
-
 
     # @classmethod
     # def perform_mutation(cls, _root, info, **data):

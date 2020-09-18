@@ -14,7 +14,7 @@ from ...core.models import PublishableModel, PublishedQuerySet
 from ...account.models import Address
 from ...order.models import FulfillmentLine
 
-from . import PackageStatus
+from . import PackageStatus, PackageNetOrGross
 
 
 class GaduurPackage(PublishableModel):
@@ -130,19 +130,29 @@ class Package(models.Model):
         null=True,
         blank=True
     )
-
     currency = models.CharField(
         max_length=settings.DEFAULT_CURRENCY_CODE_LENGTH,
         default=settings.DEFAULT_CURRENCY,
     )
-    total_gross_amount = models.DecimalField(
+    net_or_gross = models.CharField(
+        max_length=16,
+        default=PackageNetOrGross.NET,
+        choices=PackageNetOrGross.CHOICES,
+    )
+    perkg_amount = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
         default=0,
     )
-    total_gross = MoneyField(
-        amount_field="total_gross_amount", currency_field="currency"
+    perkg_price = MoneyField(
+        amount_field="perkg_amount", currency_field="currency"
     )
+
+    def get_customer_email(self):
+        return self.user.email if self.user else self.user_email
+
+    def get_total_amount(self):
+        return self.quantity * self.perkg_amount
 
 
 class PackageLine(models.Model):

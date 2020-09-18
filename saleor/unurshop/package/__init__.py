@@ -16,3 +16,13 @@ class PackageStatus:
         (DELAYED, "Delayed"),
         (CANCELED, "Canceled")
     ]
+
+
+class PackageNetOrGross:
+    NET = "net"  # group of products in an order marked as fulfilled
+    GROSS = "gross"  # fulfilled group of products in an order marked as canceled
+
+    CHOICES = [
+        (NET, "Цэвэр жин"),
+        (GROSS, "Оврийн жин"),
+    ]
