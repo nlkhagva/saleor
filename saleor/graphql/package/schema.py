@@ -3,7 +3,7 @@ import graphene
 from ..core.fields import FilterInputConnectionField
 from .bulk_mutations import GaduurBulkDelete, PackageBulkDelete
 from .mutations import GaduurCreate, GaduurDelete, GaduurUpdate, PackageCreate, PackageDelete, PackageUpdate
-from .resolvers import resolve_gaduur, resolve_gaduurs, resolve_package, resolve_packages
+from .resolvers import resolve_gaduur, resolve_gaduurs, resolve_package, resolve_packages, resolve_new_gaduurs
 from .sorters import GaduurSortingInput, PackageSortingInput
 from .types import Gaduur, Package
 from .filters import GaduurFilterInput, PackageFilterInput
@@ -23,11 +23,17 @@ class GaduurQueries(graphene.ObjectType):
         filter=GaduurFilterInput(description="Filtering options for pages."),
         description="List of the gaduur's.",
     )
+    new_gaduurs = graphene.List(
+        Gaduur
+    )
 
     def resolve_gaduur(self, info, id=None):
         return resolve_gaduur(info, id)
     def resolve_gaduurs(self, info, query=None, **_kwargs):
         return resolve_gaduurs(info, query=query)
+
+    def resolve_new_gaduurs(self, info, **_kwargs):
+        return resolve_new_gaduurs(info)
 
 class GaduurMutations(graphene.ObjectType):
     gaduur_create = GaduurCreate.Field()

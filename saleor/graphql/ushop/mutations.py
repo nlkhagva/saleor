@@ -39,12 +39,6 @@ class UshopInput(graphene.InputObjectType):
     rating_shuurhai = graphene.Int(description="rating_shuurhai rank")
     rating_product_rank = graphene.Int(description="rating_product_rank rank")
 
-    shipment_fee = graphene.Float(description="shipment_fee price")
-    shipping_fee_yaraltai = graphene.Float(description="shipping_fee_yaraltai price")
-    shipping_fee_free = graphene.Float(description="shipping_fee_free price")
-    shipping_deliver_yaraltai = graphene.String(description="shipping_deliver_yaraltai")
-    shipping_deliver_standart = graphene.String(description="shipping_deliver_standart")
-    shipping_deliver_free = graphene.String(description="shipping_deliver_free")
     listSelection = graphene.String(
         description=("Ushop listiig zadlah selection")
     )

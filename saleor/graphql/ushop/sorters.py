@@ -4,10 +4,10 @@ from ..core.types import SortInputObjectType
 
 
 class UshopSortField(graphene.Enum):
-    TITLE = ["name"]
-    SLUG = ["url"]
+    NAME = ["name"]
+    URL = ["url"]
     VISIBILITY = ["is_published", "name", "url"]
-    CREATION_DATE = ["updated_at", "name", "url"]
+    # CREATION_DATE = ["updated_at", "name", "url"]
     PUBLICATION_DATE = ["publication_date", "name", "url"]
 
     @property
@@ -21,4 +21,4 @@ class UshopSortField(graphene.Enum):
 class UshopSortingInput(SortInputObjectType):
     class Meta:
         sort_enum = UshopSortField
-        type_name = "ushops"
+        type_name = "ushop"

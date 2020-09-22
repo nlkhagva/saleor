@@ -22,8 +22,8 @@ class UshopQueries(graphene.ObjectType):
 
     ushops = FilterInputConnectionField(
         Ushop,
-        sort_by=UshopSortingInput(description="Sort pages."),
-        filter=UshopFilterInput(description="Filtering options for pages."),
+        sort_by=UshopSortingInput(description="Sort ushops."),
+        filter=UshopFilterInput(description="Filtering options for ushop."),
         description="List of the ushop's.",
     )
 

@@ -38,3 +38,7 @@ def resolve_package(info, global_id = None):
 
 def resolve_packages(info, query):
     return models.Package.objects.all()
+
+
+def resolve_new_gaduurs(info):
+    return models.GaduurPackage.objects.filter(status="new")

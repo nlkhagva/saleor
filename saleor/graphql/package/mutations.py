@@ -120,7 +120,7 @@ class PackageCreate(ModelMutation):
 
     @classmethod
     def save_lines (cls, instance: models.Package, cleaned_input: dict):
-        lines = cleaned_input.get("lines")
+        lines = cleaned_input.get("lines", [])
         fulfillments = []
 
         for line in lines:
@@ -150,7 +150,6 @@ class PackageCreate(ModelMutation):
     @classmethod
     @transaction.atomic()
     def save(cls, info, instance: models.Package, cleaned_input):
-        lines = cleaned_input.get("lines")
         instance.save()
         cls.save_lines(instance, cleaned_input)
 

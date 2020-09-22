@@ -22,6 +22,7 @@ class GaduurPackage(PublishableModel):
     shipping_type = models.TextField(max_length=10, blank=True, null=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=32, default=PackageStatus.NEW, choices=PackageStatus.CHOICES)
 
     total_weight = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
@@ -75,7 +76,7 @@ class GaduurPackage(PublishableModel):
 class Package(models.Model):
     created = models.DateTimeField(default=now, editable=False)
     name = models.CharField(max_length=50, null=True, blank=True)
-    status = models.CharField(max_length=32, default=PackageStatus.DRAFT)
+    status = models.CharField(max_length=32, default=PackageStatus.DRAFT, choices=PackageStatus.CHOICES,)
     gaduur = models.ForeignKey(
         GaduurPackage,
         null=True,
