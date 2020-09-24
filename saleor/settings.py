@@ -254,6 +254,7 @@ INSTALLED_APPS = [
     # custom apps
     'saleor.unurshop.ushop',
     'saleor.unurshop.package',
+    'saleor.unurshop.crawler',
     # External apps
     "versatileimagefield",
     "django_measurement",
