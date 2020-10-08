@@ -7,7 +7,7 @@ from graphene import relay
 from graphene_federation import key
 from graphql.error import GraphQLError
 
-from ....core.permissions import ProductPermissions
+from ....core.permissions import OrderPermissions, ProductPermissions
 from ....core.weight import convert_weight_to_default_weight_unit
 from ....product import models
 from ....product.templatetags.product_images import (
@@ -30,7 +30,7 @@ from ...core.connection import CountableDjangoObjectType
 from ...core.enums import ReportingPeriod, TaxRateType
 from ...core.fields import FilterInputConnectionField, PrefetchingConnectionField
 from ...core.types import Image, Money, MoneyRange, TaxedMoney, TaxedMoneyRange, TaxType
-from ...decorators import permission_required
+from ...decorators import one_of_permissions_required, permission_required
 from ...discount.dataloaders import DiscountsByDateTimeLoader
 from ...meta.deprecated.resolvers import resolve_meta, resolve_private_meta
 from ...meta.types import ObjectWithMetadata
@@ -52,10 +52,14 @@ from ..dataloaders import (
     CollectionsByProductIdLoader,
     ImagesByProductIdLoader,
     ImagesByProductVariantIdLoader,
+    ProductAttributesByProductTypeIdLoader,
     ProductByIdLoader,
+    ProductTypeByIdLoader,
+    ProductVariantByIdLoader,
     ProductVariantsByProductIdLoader,
     SelectedAttributesByProductIdLoader,
     SelectedAttributesByProductVariantIdLoader,
+    VariantAttributesByProductTypeIdLoader,
 )
 from ..filters import AttributeFilterInput, ProductFilterInput
 from ..resolvers import resolve_attributes
@@ -278,7 +282,9 @@ class ProductVariant(CountableDjangoObjectType):
         model = models.ProductVariant
 
     @staticmethod
-    @permission_required(ProductPermissions.MANAGE_PRODUCTS)
+    @one_of_permissions_required(
+        [ProductPermissions.MANAGE_PRODUCTS, OrderPermissions.MANAGE_ORDERS]
+    )
     def resolve_stocks(root: models.ProductVariant, info, country_code=None):
         if not country_code:
             return root.stocks.annotate_available_quantity()
@@ -507,7 +513,16 @@ class Product(CountableDjangoObjectType):
             "updated_at",
             "weight",
             "visible_in_listings",
+            "default_variant",
         ]
+
+    @staticmethod
+    def resolve_default_variant(root: models.Product, info):
+        default_variant_id = root.default_variant_id
+        if default_variant_id is None:
+            return None
+
+        return ProductVariantByIdLoader(info.context).load(root.default_variant_id)
 
     @staticmethod
     def resolve_category(root: models.Product, info):
@@ -642,6 +657,10 @@ class Product(CountableDjangoObjectType):
     def resolve_is_available_for_purchase(root: models.Product, _info):
         return root.is_available_for_purchase()
 
+    @staticmethod
+    def resolve_product_type(root: models.Product, info):
+        return ProductTypeByIdLoader(info.context).load(root.product_type_id)
+
 
 @key(fields="id")
 class ProductType(CountableDjangoObjectType):
@@ -693,12 +712,12 @@ class ProductType(CountableDjangoObjectType):
         return root.get_value_from_metadata("vatlayer.code")
 
     @staticmethod
-    def resolve_product_attributes(root: models.ProductType, *_args, **_kwargs):
-        return root.product_attributes.product_attributes_sorted().all()
+    def resolve_product_attributes(root: models.ProductType, info):
+        return ProductAttributesByProductTypeIdLoader(info.context).load(root.pk)
 
     @staticmethod
-    def resolve_variant_attributes(root: models.ProductType, *_args, **_kwargs):
-        return root.variant_attributes.variant_attributes_sorted().all()
+    def resolve_variant_attributes(root: models.ProductType, info):
+        return VariantAttributesByProductTypeIdLoader(info.context).load(root.pk)
 
     @staticmethod
     def resolve_products(root: models.ProductType, info, **_kwargs):
