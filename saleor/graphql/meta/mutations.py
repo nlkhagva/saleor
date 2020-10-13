@@ -73,20 +73,21 @@ class BaseMetadataMutation(BaseMutation):
 
     @classmethod
     def get_permissions(cls, info, **data):
-        object_id = data.get("id")
-        if not object_id:
-            return []
-        type_name, object_pk = graphene.Node.from_global_id(object_id)
-        model = cls.get_model_for_type_name(info, type_name)
-        cls.validate_model_is_model_with_metadata(model, object_id)
-        permission = cls._meta.permission_map.get(type_name)
-        if permission:
-            return permission(info, object_pk)
-        raise NotImplementedError(
-            f"Couldn't resolve permission to item: {object_id}. "
-            "Make sure that type exists inside PRIVATE_META_PERMISSION_MAP "
-            "and PUBLIC_META_PERMISSION_MAP"
-        )
+        return []
+        # object_id = data.get("id")
+        # if not object_id:
+        #     return []
+        # type_name, object_pk = graphene.Node.from_global_id(object_id)
+        # model = cls.get_model_for_type_name(info, type_name)
+        # cls.validate_model_is_model_with_metadata(model, object_id)
+        # permission = cls._meta.permission_map.get(type_name)
+        # if permission:
+        #     return permission(info, object_pk)
+        # raise NotImplementedError(
+        #     f"Couldn't resolve permission to item: {object_id}. "
+        #     "Make sure that type exists inside PRIVATE_META_PERMISSION_MAP "
+        #     "and PUBLIC_META_PERMISSION_MAP"
+        # )
 
     @classmethod
     def mutate(cls, root, info, **data):

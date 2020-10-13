@@ -992,6 +992,10 @@ class ProductCreate(ModelMutation):
             if stocks:
                 cls.create_variant_stocks(variant, stocks)
 
+            instance.minimal_variant_price_amount = variant_price
+            instance.default_variant = variant
+            instance.save()
+
         attributes = cleaned_input.get("attributes")
         if attributes:
             AttributeAssignmentMixin.save(instance, attributes)

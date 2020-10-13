@@ -450,11 +450,7 @@ class Fulfillment(ModelWithMetadata):
     uk_date = models.DateField(null=True, blank=True)
     firstname = models.CharField(max_length=256, default="", blank=True)
     lastname = models.CharField(max_length=256, default="", blank=True)
-    ushop_status = models.CharField(
-        max_length=32,
-        default=FulfillmentUshopStatus.NEW,
-        choices=FulfillmentUshopStatus.CHOICES
-    )
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
