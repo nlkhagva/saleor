@@ -27,6 +27,11 @@ class GaduurInput(graphene.InputObjectType):
     publication_date = graphene.String(
         description="Publication date. ISO 8601 standard."
     )
+    status = graphene.String(description="gaduur package status")
+    start_date = graphene.String(description="teeverlesen ognoo")
+    end_date = graphene.String(description="mongold ochih hugatss uridchilsan baidlaar")
+    received_date = graphene.String(description="mongold ochson ognoo")
+    tracking_number = graphene.String(description="teeveriin track code")
 
 
 class GaduurCreate(ModelMutation):
@@ -134,18 +139,22 @@ class PackageCreate(ModelMutation):
             fline = FulfillmentLine.objects.get(pk=fullfillment_pk)
             fline.ushop_status = FulfillmentUshopStatus.SHIPPING
             fline.save()
+            try:
+                index = fulfillments.index(fline.fulfillment)
 
-        #     try:
-        #         index = fulfillments.index(fline.fulfillment)
-        #     except:
-        #         fulfillments.append(fline.fulfillment)
+            except:
+                fulfillments.append(fline.fulfillment)
 
-        # for fulfillment in fulfillments:
-        #     status = fulfillment.get_line_status()
-        #     if status != "diff":
-        #         fulfillment.ushop_status = status
-        #         fulfillment.save()
+            status = fulfillment.get_line_status()
+        for fulfillment in fulfillments:
+            if status != "diff":
+                fulfillment.ushop_status = status
+                fulfillment.save()
 
+        if len(fulfillments) > 0:
+            instance.sender_address = fulfillments[0].order.shipping_address
+            instance.shipping_address = fulfillments[0].order.shipping_address
+            instance.save()
 
     @classmethod
     @transaction.atomic()

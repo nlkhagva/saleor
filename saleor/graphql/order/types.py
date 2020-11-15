@@ -212,8 +212,8 @@ class Fulfillment(CountableDjangoObjectType):
             "status",
             "uk_date",
             "tracking_number",
-            "ushop_status",
-            "order"
+            "order",
+            "ushop_status"
         ]
 
     @staticmethod

@@ -14,14 +14,15 @@ from ...core.models import PublishableModel, PublishedQuerySet
 from ...account.models import Address
 from ...order.models import FulfillmentLine
 
-from . import PackageStatus, PackageNetOrGross
+from . import PackageStatus, PackageNetOrGross, PackageType
 
 
 class GaduurPackage(PublishableModel):
     name = models.TextField(max_length=20, unique=True)
     shipping_type = models.TextField(max_length=10, blank=True, null=True)
-    start_date = models.DateTimeField(null=True, blank=True)
-    end_date = models.DateTimeField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    received_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=32, default=PackageStatus.NEW, choices=PackageStatus.CHOICES)
 
     total_weight = models.DecimalField(
@@ -77,6 +78,7 @@ class Package(models.Model):
     created = models.DateTimeField(default=now, editable=False)
     name = models.CharField(max_length=50, null=True, blank=True)
     status = models.CharField(max_length=32, default=PackageStatus.DRAFT, choices=PackageStatus.CHOICES,)
+    package_type = models.CharField(max_length=32, default=PackageType.ORDER, choices=PackageType.CHOICES,)
     gaduur = models.ForeignKey(
         GaduurPackage,
         null=True,
