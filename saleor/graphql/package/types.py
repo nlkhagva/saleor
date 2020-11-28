@@ -24,7 +24,16 @@ class Gaduur(CountableDjangoObjectType):
             "start_date",
             "end_date",
             "received_date",
-            "tracking_number"
+            "tracking_number",
+            "net_weight",
+            "gross_weight",
+            "total_amount",
+            "total_paid_amount",
+            "total_cost",
+            "package_count",
+            "received_count",
+            "hot_count",
+            "huduu_count"
         ]
         interfaces = [relay.Node]
         model = models.GaduurPackage

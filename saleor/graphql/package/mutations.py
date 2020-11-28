@@ -141,12 +141,11 @@ class PackageCreate(ModelMutation):
             fline.save()
             try:
                 index = fulfillments.index(fline.fulfillment)
-
             except:
                 fulfillments.append(fline.fulfillment)
 
-            status = fulfillment.get_line_status()
         for fulfillment in fulfillments:
+            status = fulfillment.get_line_status()
             if status != "diff":
                 fulfillment.ushop_status = status
                 fulfillment.save()
@@ -161,6 +160,7 @@ class PackageCreate(ModelMutation):
     def save(cls, info, instance: models.Package, cleaned_input):
         instance.save()
         cls.save_lines(instance, cleaned_input)
+        instance.gaduur.calc_and_save()
 
     # @classmethod
     # def clean_input(cls, info, instace: models.Package, data, input_cls=None):

@@ -7,6 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator
 from draftjs_sanitizer import clean_draft_js
 from ...core.db.fields import SanitizedJSONField
+from functools import reduce
 
 from ...seo.models import SeoModel, SeoModelTranslation
 from ...core.models import PublishableModel, PublishedQuerySet
@@ -25,13 +26,13 @@ class GaduurPackage(PublishableModel):
     received_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=32, default=PackageStatus.NEW, choices=PackageStatus.CHOICES)
 
-    total_weight = models.DecimalField(
+    net_weight = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
         null=True,
         blank=True
     )
-    actual_weight = models.DecimalField(
+    gross_weight = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
         decimal_places=settings.DEFAULT_DECIMAL_PLACES,
         null=True,
@@ -72,6 +73,17 @@ class GaduurPackage(PublishableModel):
     received_count = models.IntegerField(null=True, blank=True)
     hot_count = models.IntegerField(null=True, blank=True)
     huduu_count = models.IntegerField(null=True, blank=True)
+
+    def calc_and_save(self):
+        cal_sum = lambda a, b: a + b
+        packages = self.packages.all()
+
+        self.net_weight = reduce(cal_sum, [package.net_weight for package in packages], 0)
+        self.gross_weight = reduce(cal_sum, [package.gross_weight for package in packages], 0)
+        self.total_amount = reduce(cal_sum, [package.get_total_amount() for package in packages], 0)
+        self.package_count = reduce(cal_sum, [len(packages)], 0)
+        self.save()
+
 
 
 class Package(models.Model):
@@ -155,7 +167,11 @@ class Package(models.Model):
         return self.user.email if self.user else self.user_email
 
     def get_total_amount(self):
-        return self.quantity * self.perkg_amount
+        return self.perkg_amount * (self.net_weight if self.net_or_gross == PackageNetOrGross.NET else self.gross_weight)
+
+    def update_gaduur_info(self):
+        pass
+        # self.gaduur.total
 
 
 class PackageLine(models.Model):
