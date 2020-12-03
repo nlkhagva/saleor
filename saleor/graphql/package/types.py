@@ -20,7 +20,7 @@ class Gaduur(CountableDjangoObjectType):
             "is_published",
             "publication_date",
             "packages",
-            "status",
+            "ustatus",
             "start_date",
             "end_date",
             "received_date",
@@ -64,7 +64,7 @@ class Package(CountableDjangoObjectType):
         only_fields = [
             "id",
             "name",
-            "status",
+            "ustatus",
             "gaduur",
             "user",
             "shipping_address",

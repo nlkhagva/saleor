@@ -16,7 +16,7 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
 )
 from ...unurshop.package import models
 from ...order.models import FulfillmentLine
-from ...order import FulfillmentUshopStatus
+from ...unurshop.package import PackageStatus
 
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
@@ -137,7 +137,7 @@ class PackageCreate(ModelMutation):
                 fulfillmentline_id=fullfillment_pk
             )
             fline = FulfillmentLine.objects.get(pk=fullfillment_pk)
-            fline.ushop_status = FulfillmentUshopStatus.SHIPPING
+            fline.ustatus = PackageStatus.SHIPPING
             fline.save()
             try:
                 index = fulfillments.index(fline.fulfillment)
@@ -203,3 +203,10 @@ class PackageDelete(ModelDeleteMutation):
         description="delete package"
         model = models.Package
         permissions=("page.manage_pages")
+
+    @classmethod
+    def clean_instance(cls, info, instance):
+        for line in instance.lines.all():
+            if line.fulfillmentline:
+                line.fulfillmentline.ustatus = PackageStatus.ATUK
+                line.save()

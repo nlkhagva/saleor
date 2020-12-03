@@ -9,7 +9,7 @@ from ...core.taxes import display_gross_prices
 from ...graphql.utils import get_user_or_app_from_context
 from ...order import OrderStatus, models
 from ...order.models import FulfillmentStatus
-from ...order import FulfillmentUshopStatus
+from ...unurshop.package import PackageStatus
 from ...order.utils import get_order_country, get_valid_shipping_methods_for_order
 from ...plugins.manager import get_plugins_manager
 from ...product.templatetags.product_images import get_product_image_thumbnail
@@ -180,7 +180,7 @@ class FulfillmentLine(CountableDjangoObjectType):
         description = "Represents line of the fulfillment."
         interfaces = [relay.Node]
         model = models.FulfillmentLine
-        only_fields = ["id", "quantity", "ushop_status", "changed_date", "soon_date"]
+        only_fields = ["id", "quantity", "ustatus", "changed_date", "soon_date"]
 
     @staticmethod
     def resolve_order_line(root: models.FulfillmentLine, _info):
@@ -213,7 +213,7 @@ class Fulfillment(CountableDjangoObjectType):
             "uk_date",
             "tracking_number",
             "order",
-            "ushop_status"
+            "ustatus"
         ]
 
     @staticmethod
@@ -240,7 +240,7 @@ class Fulfillment(CountableDjangoObjectType):
 
     @staticmethod
     def resolve_others2shipping(root: models.Fulfillment, _info):
-        return models.Fulfillment.objects.filter(Q(user_id = root.user_id) & Q(firstname=root.firstname) & Q(lastname=root.lastname)).filter(status="fulfilled").filter(Q(ushop_status=FulfillmentUshopStatus.NEW) | Q(ushop_status=FulfillmentUshopStatus.ATUK)).exclude(id=root.id)
+        return models.Fulfillment.objects.filter(Q(user_id = root.user_id) & Q(firstname=root.firstname) & Q(lastname=root.lastname)).filter(status="fulfilled").filter(Q(ustatus=PackageStatus.NEW) | Q(ustatus=PackageStatus.ATUK)).exclude(id=root.id)
 
 
 class OrderLine(CountableDjangoObjectType):

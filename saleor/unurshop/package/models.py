@@ -13,7 +13,6 @@ from ...seo.models import SeoModel, SeoModelTranslation
 from ...core.models import PublishableModel, PublishedQuerySet
 
 from ...account.models import Address
-from ...order.models import FulfillmentLine
 
 from . import PackageStatus, PackageNetOrGross, PackageType
 
@@ -24,7 +23,7 @@ class GaduurPackage(PublishableModel):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     received_date = models.DateField(null=True, blank=True)
-    status = models.CharField(max_length=32, default=PackageStatus.NEW, choices=PackageStatus.CHOICES)
+    ustatus = models.CharField(max_length=32, default=PackageStatus.NEW, choices=PackageStatus.CHOICES)
 
     net_weight = models.DecimalField(
         max_digits=settings.DEFAULT_MAX_DIGITS,
@@ -89,7 +88,7 @@ class GaduurPackage(PublishableModel):
 class Package(models.Model):
     created = models.DateTimeField(default=now, editable=False)
     name = models.CharField(max_length=50, null=True, blank=True)
-    status = models.CharField(max_length=32, default=PackageStatus.DRAFT, choices=PackageStatus.CHOICES,)
+    ustatus = models.CharField(max_length=32, default=PackageStatus.DRAFT, choices=PackageStatus.CHOICES,)
     package_type = models.CharField(max_length=32, default=PackageType.ORDER, choices=PackageType.CHOICES,)
     gaduur = models.ForeignKey(
         GaduurPackage,
@@ -184,12 +183,13 @@ class PackageLine(models.Model):
         on_delete=models.SET_NULL
     )
     fulfillmentline = models.ForeignKey(
-        FulfillmentLine,
-        related_name="+",
-        null=True,
+        to="order.FulfillmentLine",
+        related_name="fulfillmentlines",
+        on_delete=models.SET_NULL,
         blank=True,
-        on_delete=models.SET_NULL
+        null=True
     )
+
     name = models.CharField(max_length=255)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     currency = models.CharField(

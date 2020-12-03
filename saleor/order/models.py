@@ -25,8 +25,10 @@ from ..discount.models import Voucher
 from ..giftcard.models import GiftCard
 from ..payment import ChargeStatus, TransactionKind
 from ..shipping.models import ShippingMethod
-from . import FulfillmentStatus, OrderEvents, OrderStatus, FulfillmentUshopStatus
+from . import FulfillmentStatus, OrderEvents, OrderStatus
 from functools import reduce
+from ..unurshop.package.models import PackageLine
+from ..unurshop.package import PackageStatus
 
 
 class OrderQueryset(models.QuerySet):
@@ -451,10 +453,10 @@ class Fulfillment(ModelWithMetadata):
     firstname = models.CharField(max_length=256, default="", blank=True)
     lastname = models.CharField(max_length=256, default="", blank=True)\
 
-    ushop_status = models.CharField(
+    ustatus = models.CharField(
         max_length=32,
-        default=FulfillmentUshopStatus.NEW,
-        choices=FulfillmentUshopStatus.CHOICES
+        default=PackageStatus.NEW,
+        choices=PackageStatus.CHOICES
     )
 
 
@@ -522,10 +524,17 @@ class FulfillmentLine(models.Model):
         blank=True,
         null=True,
     )
-    ushop_status = models.CharField(
+    ustatus = models.CharField(
         max_length=32,
-        default=FulfillmentUshopStatus.NEW,
-        choices=FulfillmentUshopStatus.CHOICES
+        default=PackageStatus.NEW,
+        choices=PackageStatus.CHOICES
+    )
+    package_line = models.ForeignKey(
+        PackageLine,
+        related_name="packagelines",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     changed_date = models.DateField(blank=True, null=True, auto_now=True)
     soon_date = models.DateField(blank=True, null=True)

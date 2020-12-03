@@ -25,21 +25,6 @@ class FulfillmentStatus:
         (CANCELED, "Canceled"),
     ]
 
-class FulfillmentUshopStatus:
-    NEW = "new"
-    ATUK = "atuk"
-    SHIPPING = "shipping"
-    ATMGL = "atmgl"
-    RECEIVED = "received"
-
-    CHOICES = [
-        (NEW, "New"),
-        (ATUK, "Англид ирсэн"),
-        (SHIPPING, "Тээвэрт орсон"),
-        (ATMGL, "Монголд ирсэн"),
-        (RECEIVED, "Хэрэглэгч хүлээж авсан"),
-    ]
-
 class OrderEvents:
     """The different order event types."""
 

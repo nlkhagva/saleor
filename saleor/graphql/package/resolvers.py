@@ -1,8 +1,10 @@
 import graphene
 
 from ...unurshop.package import models
+from ...order.models import Fulfillment as FModel, FulfillmentLine as FlineModel, Order as OrderModel
 from .types import Gaduur, Package
 import tldextract
+from django.db.models import Q
 
 USHOP_SEARCH_FIELDS = ("description", "name", "url")
 
@@ -42,3 +44,11 @@ def resolve_packages(info, query):
 
 def resolve_new_gaduurs(info):
     return models.GaduurPackage.objects.filter(status="new")
+
+
+def resolve_flines_by_address(info, ordernumber):
+    fs = FModel.objects.get(tracking_number=ordernumber)
+
+    allorder = FlineModel.objects.filter(order_line__order_id = fs.order.id).filter(fulfillments)
+
+    pass

@@ -1,6 +1,7 @@
 class PackageStatus:
     DRAFT = "draft"
     NEW = "new"
+    ATUK = "atuk"
     SHIPPING = "shipping"
     INMONGOLIA = "inmongolia"
     RECEIVED = "received"
@@ -10,6 +11,7 @@ class PackageStatus:
     CHOICES = [
         (NEW, "New"),
         (DRAFT, "Draft"),
+        (ATUK, "UK Салбарт ирсэн"),
         (SHIPPING, "Shipping"),
         (INMONGOLIA, "In Mongolia"),
         (RECEIVED, "Received"),
