@@ -12,7 +12,7 @@ class Crawler(CountableDjangoObjectType):
             "id",
             "url",
             "completed",
-            "crawler_at",
+            "crawled_at",
             "product_count",
             "json_data",
             "json_data_backup",

@@ -79,7 +79,6 @@ class Package(CountableDjangoObjectType):
             "perkg_amount",
             "net_or_gross",
             "perkg_price",
-            "get_total",
             "created",
             "lines"
         ]

@@ -182,10 +182,16 @@ class PackageLine(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
-    fulfillmentline = models.ForeignKey(
+    # fulfillmentline = models.ForeignKey(
+    #     to="order.FulfillmentLine",
+    #     related_name="fulfillmentlines",
+    #     on_delete=models.SET_NULL,
+    #     blank=True,
+    #     null=True
+    # )
+    fulfillmentline = models.OneToOneField(
         to="order.FulfillmentLine",
-        related_name="fulfillmentlines",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True
     )

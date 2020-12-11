@@ -529,13 +529,6 @@ class FulfillmentLine(models.Model):
         default=PackageStatus.NEW,
         choices=PackageStatus.CHOICES
     )
-    package_line = models.ForeignKey(
-        PackageLine,
-        related_name="packagelines",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
     changed_date = models.DateField(blank=True, null=True, auto_now=True)
     soon_date = models.DateField(blank=True, null=True)
 
