@@ -17,7 +17,7 @@ class GaduurFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.GaduurPackage
-        fields = ["search"]
+        fields = ["ustatus","search"]
 
 
 class GaduurFilterInput(FilterInputObjectType):

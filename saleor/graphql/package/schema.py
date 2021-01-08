@@ -3,7 +3,7 @@ import graphene
 from ..core.fields import FilterInputConnectionField
 from .bulk_mutations import GaduurBulkDelete, PackageBulkDelete
 from .mutations import GaduurCreate, GaduurDelete, GaduurUpdate, PackageCreate, PackageDelete, PackageUpdate
-from .resolvers import resolve_gaduur, resolve_gaduurs, resolve_package, resolve_packages, resolve_new_gaduurs
+from .resolvers import resolve_gaduur, resolve_gaduurs, resolve_package, resolve_packages
 from .sorters import GaduurSortingInput, PackageSortingInput
 from .types import Gaduur, Package
 from .filters import GaduurFilterInput, PackageFilterInput
@@ -26,17 +26,12 @@ class GaduurQueries(graphene.ObjectType):
         filter=GaduurFilterInput(description="Filtering options for pages."),
         description="List of the gaduur's.",
     )
-    new_gaduurs = graphene.List(
-        Gaduur
-    )
 
     def resolve_gaduur(self, info, id=None):
         return resolve_gaduur(info, id)
     def resolve_gaduurs(self, info, query=None, **_kwargs):
         return resolve_gaduurs(info, query=query)
 
-    def resolve_new_gaduurs(self, info, **_kwargs):
-        return resolve_new_gaduurs(info)
 
 class GaduurMutations(graphene.ObjectType):
     gaduur_create = GaduurCreate.Field()
@@ -47,32 +42,32 @@ class GaduurMutations(graphene.ObjectType):
 
 ###################################
 # PACKAGES
-class FlineCustom(CountableDjangoObjectType):
-    order_id = graphene.Int()
-    checked = graphene.Boolean()
+# class FlineCustom(CountableDjangoObjectType):
+#     order_id = graphene.Int()
+#     checked = graphene.Boolean()
 
-    class Meta:
-        description = "Represents line of the fulfillment."
-        interfaces = [graphene.relay.Node]
-        model = FulfillmentLineModel
-        only_fields = ["id", "quantity", "ustatus", "changed_date", "soon_date"]
+#     class Meta:
+#         description = "Represents line of the fulfillment."
+#         interfaces = [graphene.relay.Node]
+#         model = FulfillmentLineModel
+#         only_fields = ["id", "quantity", "ustatus", "changed_date", "soon_date"]
 
-    @staticmethod
-    def resolve_order_id(root: FulfillmentLineModel, _info):
-        return root.order_line.order_id
+#     @staticmethod
+#     def resolve_order_id(root: FulfillmentLineModel, _info):
+#         return root.order_line.order_id
 
-    def resoleve_checked(root: FulfillmentLineModel, _info):
-        return False
+#     def resoleve_checked(root: FulfillmentLineModel, _info):
+#         return False
 
-class FlinesByAddress(graphene.ObjectType):
-    address = graphene.Field(
-       Address,
-       description="Хүлээн авах хаяг"
-    )
-    lines = graphene.List(
-       FlineCustom,
-       description="custom fulfillmentline"
-    )
+# class FlinesByAddress(graphene.ObjectType):
+#     address = graphene.Field(
+#        Address,
+#        description="Хүлээн авах хаяг"
+#     )
+#     lines = graphene.List(
+#        FlineCustom,
+#        description="custom fulfillmentline"
+#     )
 
 
 class PackageQueries(graphene.ObjectType):
@@ -87,18 +82,18 @@ class PackageQueries(graphene.ObjectType):
         filter=PackageFilterInput(description="filtering options for package"),
         description="List of the package"
     )
-    flines_by_address = graphene.Field(
-        FlinesByAddress,
-        description="flines"
-    )
+    # flines_by_address = graphene.Field(
+    #     FlinesByAddress,
+    #     description="flines"
+    # )
 
     def resolve_package(self, info, id=None):
         return resolve_package(info, id)
     def resolve_packages(self, info, query=None, **_kwargs):
         return resolve_packages(info, query=query)
 
-    def resolve_flines_by_address(self, info, ordernumber=None, **_kwargs):
-        return resolve_flines_by_address(info, ordernumber)
+    # def resolve_flines_by_address(self, info, ordernumber=None, **_kwargs):
+    #     return resolve_flines_by_address(info, ordernumber)
 
 class PackageMutations(graphene.ObjectType):
     package_create = PackageCreate.Field()

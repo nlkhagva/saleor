@@ -42,10 +42,6 @@ def resolve_packages(info, query):
     return models.Package.objects.all()
 
 
-def resolve_new_gaduurs(info):
-    return models.GaduurPackage.objects.filter(status="new")
-
-
 def resolve_flines_by_address(info, ordernumber):
     fs = FModel.objects.get(tracking_number=ordernumber)
 

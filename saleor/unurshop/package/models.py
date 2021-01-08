@@ -161,6 +161,13 @@ class Package(models.Model):
     perkg_price = MoneyField(
         amount_field="perkg_amount", currency_field="currency"
     )
+    order_line = models.ForeignKey(
+        to="order.OrderLine",
+        related_name="+",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE
+    )
 
     def get_customer_email(self):
         return self.user.email if self.user else self.user_email

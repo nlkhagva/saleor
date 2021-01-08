@@ -231,16 +231,36 @@ class Order(ModelWithMetadata):
         return max(self.payments.all(), default=None, key=attrgetter("pk"))
 
     def get_payment_status(self):
-        last_payment = self.get_last_payment()
-        if last_payment:
-            return last_payment.charge_status
+        total_paid = self._total_paid()
+        if self.is_fully_paid():
+            return ChargeStatus.FULLY_CHARGED
+        if self.is_partly_paid():
+            return ChargeStatus.PARTIALLY_CHARGED
+
+        # totalpaid = sum([p.captured_amount for p in self.payments.all()])
+
+        # last_payment = self.get_last_payment()
+        # if last_payment:
+        #     return last_payment.charge_status
         return ChargeStatus.NOT_CHARGED
 
     def get_payment_status_display(self):
-        last_payment = self.get_last_payment()
-        if last_payment:
-            return last_payment.get_charge_status_display()
-        return dict(ChargeStatus.CHOICES).get(ChargeStatus.NOT_CHARGED)
+        # last_payment = self.get_last_payment()
+        # if last_payment:
+        #     return last_payment.get_charge_status_display()
+        # return dict(ChargeStatus.CHOICES).get(ChargeStatus.NOT_CHARGED)
+        status = ""
+
+        total_paid = self._total_paid()
+        if self.is_fully_paid():
+            status = ChargeStatus.FULLY_CHARGED
+        else:
+            if self.is_partly_paid():
+                status = ChargeStatus.PARTIALLY_CHARGED
+            else:
+                status = ChargeStatus.NOT_CHARGED
+
+        return dict(ChargeStatus.CHOICES).get(status)
 
     def is_pre_authorized(self):
         return (
@@ -501,7 +521,7 @@ class Fulfillment(ModelWithMetadata):
     def get_line_status(self):
         # angli dahi hurgelt hasav
         tmp = filter(lambda x: x.order_line.variant.product.product_type_id != 16, self)
-        return reduce(lambda x,y: x if x == y else "diff", [x.ushop_status for x in tmp] )
+        return reduce(lambda x,y: x if x == y else "diff", [x.ustatus for x in tmp] )
 
     @property
     def is_tracking_number_url(self):

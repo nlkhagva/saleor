@@ -71,8 +71,8 @@ def _process_shipping_data_for_order(
     checkout: Checkout, shipping_price: TaxedMoney
 ) -> dict:
     """Fetch, process and return shipping data from checkout."""
-    if not checkout.is_shipping_required():
-        return {}
+    # if not checkout.is_shipping_required():
+    #     return {}
 
     shipping_address = checkout.shipping_address
 

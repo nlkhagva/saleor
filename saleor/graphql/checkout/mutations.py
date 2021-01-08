@@ -273,7 +273,8 @@ class CheckoutCreate(ModelMutation, I18nMixin):
 
         updated_fields = ["last_change"]
 
-        if shipping_address and instance.is_shipping_required():
+        # if shipping_address and instance.is_shipping_required():
+        if shipping_address:
             shipping_address.save()
             instance.shipping_address = shipping_address.get_copy()
             updated_fields.append("shipping_address")
@@ -570,15 +571,15 @@ class CheckoutShippingAddressUpdate(BaseMutation, I18nMixin):
                 }
             )
 
-        if not checkout.is_shipping_required():
-            raise ValidationError(
-                {
-                    "shipping_address": ValidationError(
-                        ERROR_DOES_NOT_SHIP,
-                        code=CheckoutErrorCode.SHIPPING_NOT_REQUIRED,
-                    )
-                }
-            )
+        # if not checkout.is_shipping_required():
+        #     raise ValidationError(
+        #         {
+        #             "shipping_address": ValidationError(
+        #                 ERROR_DOES_NOT_SHIP,
+        #                 code=CheckoutErrorCode.SHIPPING_NOT_REQUIRED,
+        #             )
+        #         }
+        #     )
 
         shipping_address = cls.validate_address(
             shipping_address, instance=checkout.shipping_address, info=info

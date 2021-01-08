@@ -15,8 +15,10 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
     ModelMutation,
 )
 from ...unurshop.package import models
-from ...order.models import FulfillmentLine
+from ...order.models import FulfillmentLine, OrderLine
+from ...order.utils import add_variant_to_draft_order, recalculate_order
 from ...unurshop.package import PackageStatus
+from ...product.models import ProductVariant
 
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
@@ -27,7 +29,7 @@ class GaduurInput(graphene.InputObjectType):
     publication_date = graphene.String(
         description="Publication date. ISO 8601 standard."
     )
-    status = graphene.String(description="gaduur package status")
+    ustatus = graphene.String(description="gaduur package status")
     start_date = graphene.String(description="teeverlesen ognoo")
     end_date = graphene.String(description="mongold ochih hugatss uridchilsan baidlaar")
     received_date = graphene.String(description="mongold ochson ognoo")
@@ -147,10 +149,31 @@ class PackageCreate(ModelMutation):
         for fulfillment in fulfillments:
             status = fulfillment.get_line_status()
             if status != "diff":
-                fulfillment.ushop_status = status
+                fulfillment.ustatus = status
                 fulfillment.save()
 
         if len(fulfillments) > 0:
+            #zahialga der ilgeemjiin tulbur nemeh heseg
+            mn_cargo = ProductVariant.objects.get(pk=404)
+            weight = float(cleaned_input.get("net_weight", 0)) if cleaned_input.get("net_or_gross", "net") == "net" else float(cleaned_input.get("gross_weight", 0))
+            perkg = float(cleaned_input.get("perkg_amount", 0))
+            quantity = perkg*weight*100
+
+            if not instance.order_line:
+                order_line = add_variant_to_draft_order(fulfillments[0].order, mn_cargo, quantity)
+                order_line.product_name = "#" + instance.name + " " + order_line.product_name
+                order_line.save(update_fields=["product_name"])
+
+                instance.order_line = order_line
+                instance.save()
+            else:
+                order_line = instance.order_line
+                order_line.quantity = quantity
+                order_line.save(update_fields=["quantity"])
+
+            recalculate_order(fulfillments[0].order)
+
+            instance.user = fulfillments[0].order.user
             instance.sender_address = fulfillments[0].order.shipping_address
             instance.shipping_address = fulfillments[0].order.shipping_address
             instance.save()
@@ -205,8 +228,30 @@ class PackageDelete(ModelDeleteMutation):
         permissions=("page.manage_pages")
 
     @classmethod
+    @transaction.atomic()
     def clean_instance(cls, info, instance):
+        fulfillments = []
+
         for line in instance.lines.all():
             if line.fulfillmentline:
                 line.fulfillmentline.ustatus = PackageStatus.ATUK
-                line.save()
+                line.fulfillmentline.save()
+
+                try:
+                    index = fulfillments.index(line.fulfillmentline.fulfillment)
+                except:
+                    fulfillments.append(line.fulfillmentline.fulfillment)
+                line.delete()
+
+        for fulfillment in fulfillments:
+            status = fulfillment.get_line_status()
+            if status != "diff":
+                fulfillment.ustatus = status
+                fulfillment.save()
+
+        if instance.order_line:
+            order = instance.order_line.order
+            instance.order_line.delete()
+
+        recalculate_order(fulfillments[0].order)
+
