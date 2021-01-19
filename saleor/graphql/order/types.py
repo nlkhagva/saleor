@@ -572,3 +572,11 @@ class Order(CountableDjangoObjectType):
     @staticmethod
     def resolve_meta(root: models.Order, _info):
         return resolve_meta(root, _info)
+
+
+class OrderChat(graphene.ObjectType):
+    message = graphene.String(description="message")
+    date = graphene.types.datetime.DateTime(
+        description="Date when event happened at in ISO 8601 format."
+    )
+    user = graphene.Field(User, description="User who performed the action.")

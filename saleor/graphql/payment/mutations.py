@@ -1,6 +1,7 @@
 import graphene
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from typing import Iterable, List, Optional, Tuple
 
 from ...checkout.calculations import calculate_checkout_total_with_gift_cards
 from ...checkout.checkout_cleaner import clean_billing_address, clean_checkout_shipping
@@ -14,11 +15,38 @@ from ...payment.utils import create_payment, is_currency_supported
 from ..account.i18n import I18nMixin
 from ..account.types import AddressInput
 from ..checkout.types import Checkout
+from ..order.types import Order
 from ..core.mutations import BaseMutation
 from ..core.scalars import PositiveDecimal
 from ..core.types import common as common_types
 from ..core.utils import from_global_id_strict_type
 from .types import Payment
+from ...payment.models import Transaction
+from ...checkout.error_codes import CheckoutErrorCode
+
+
+def _process_payment(
+    payment: Payment,
+    store_source: bool,
+    payment_data: Optional[dict],
+) -> Transaction:
+    """Process the payment assigned to checkout."""
+    try:
+        if payment.to_confirm:
+            txn = gateway.confirm(payment, additional_data=payment_data)
+        else:
+            txn = gateway.process_payment(
+                payment=payment,
+                token=payment.token,
+                store_source=store_source,
+                additional_data=payment_data,
+            )
+        payment.refresh_from_db()
+        if not txn.is_success:
+            raise PaymentError(txn.error)
+    except PaymentError as e:
+        raise ValidationError(str(e), code=CheckoutErrorCode.PAYMENT_ERROR.value)
+    return txn
 
 
 class PaymentInput(graphene.InputObjectType):
@@ -254,3 +282,68 @@ class PaymentVoid(BaseMutation):
         except PaymentError as e:
             raise ValidationError(str(e), code=PaymentErrorCode.PAYMENT_ERROR)
         return PaymentVoid(payment=payment)
+ 
+class OrderRemainingPayment(BaseMutation):
+    payment = graphene.Field(Payment, description="Updated payment.")
+    
+    class Meta:
+        description = "Captures the order remaining payment amount."
+        error_type_class = common_types.PaymentError
+        error_type_field = "payment_errors"
+
+    class Arguments:
+        order_id = graphene.ID(required=True, description="Order ID.")
+        input = PaymentInput(
+            description="Data required to create a new payment.", required=True
+        )        
+
+    @classmethod
+    def validate_token(cls, manager, gateway: str, input_data: dict):
+        token = input_data.get("token")
+        is_required = manager.token_is_required_as_payment_input(gateway)
+        if not token and is_required:
+            raise ValidationError(
+                {
+                    "token": ValidationError(
+                        f"Token is required for {gateway}.",
+                        code=PaymentErrorCode.REQUIRED.value,
+                    ),
+                }
+            )
+
+    @classmethod
+    def perform_mutation(cls, _root, info, order_id, **data):
+        order = cls.get_node_or_error(info, order_id, only_type=Order)
+
+        data = data["input"]
+        gateway = data["gateway"]
+
+        # cls.validate_gateway(gateway, order.cu)
+        cls.validate_token(info.context.plugins, gateway, data)
+        # cls.validate_return_url(data)
+
+        amount = data.get("amount", abs(order.total_balance.amount))
+        
+        extra_data = {
+            "customer_user_agent": info.context.META.get("HTTP_USER_AGENT"),
+        }
+
+        payment = create_payment(
+            gateway=gateway,
+            payment_token=data.get("token", ""),
+            total=amount,
+            currency=settings.DEFAULT_CURRENCY,
+            email=order.user_email,
+            extra_data=extra_data,
+            # FIXME this is not a customer IP address. It is a client storefront ip
+            customer_ip_address=get_client_ip(info.context),
+            order=order,
+            return_url=data.get("return_url"),
+        )
+
+        txn = _process_payment(
+            payment=payment,  # type: ignore
+            store_source=False,
+            payment_data={},
+        )
+        return OrderRemainingPayment(payment=payment)

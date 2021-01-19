@@ -344,13 +344,18 @@ class Order(ModelWithMetadata):
 
     @property
     def total_captured(self):
-        payment = self.get_last_payment()
-        if payment and payment.charge_status in (
-            ChargeStatus.PARTIALLY_CHARGED,
-            ChargeStatus.FULLY_CHARGED,
-            ChargeStatus.PARTIALLY_REFUNDED,
-        ):
-            return Money(payment.captured_amount, payment.currency)
+        payments = self.payments.filter(
+            charge_status__in=[
+                ChargeStatus.PARTIALLY_CHARGED,
+                ChargeStatus.FULLY_CHARGED,
+                ChargeStatus.PARTIALLY_REFUNDED,
+            ]
+        )
+        tc = [payment.get_captured_amount() for payment in payments]
+        total_paid = sum(tc, zero_money())
+
+        if total_paid.amount > 0: 
+            return total_paid
         return zero_money()
 
     @property

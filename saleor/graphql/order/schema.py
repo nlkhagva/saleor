@@ -41,6 +41,7 @@ from .mutations.orders import (
     OrderUpdatePrivateMeta,
     OrderUpdateShipping,
     OrderVoid,
+    OrderAddChat,
 )
 from .resolvers import (
     resolve_draft_orders,
@@ -49,10 +50,11 @@ from .resolvers import (
     resolve_order_by_token,
     resolve_orders,
     resolve_orders_total,
-    resolve_ready2shipping
+    resolve_ready2shipping,
+    resolve_order_chats
 )
 from .sorters import OrderSortingInput
-from .types import Order, OrderEvent, Fulfillment
+from .types import Order, OrderEvent, Fulfillment, OrderChat
 
 
 class OrderFilterInput(FilterInputObjectType):
@@ -129,6 +131,8 @@ class OrderQueries(graphene.ObjectType):
         ordernumber=graphene.String(description="uk shop ordernumber"),
     )
 
+    order_chats = graphene.List(OrderChat, id=graphene.Argument(graphene.ID, description="ID of an order.", required=True),)
+
     @permission_required(OrderPermissions.MANAGE_ORDERS)
     def resolve_homepage_events(self, *_args, **_kwargs):
         return resolve_homepage_events()
@@ -156,6 +160,8 @@ class OrderQueries(graphene.ObjectType):
     def resolve_ready2shipping(self, info, id=None, ordernumber=None):
         return resolve_ready2shipping(info, id, ordernumber)
 
+    def resolve_order_chats(self, info, id):
+        return resolve_order_chats(info, id)
 
 
 class OrderMutations(graphene.ObjectType):
@@ -230,3 +236,4 @@ class OrderMutations(graphene.ObjectType):
     order_void = OrderVoid.Field()
 
     order_bulk_cancel = OrderBulkCancel.Field()
+    order_add_chat = OrderAddChat.Field()

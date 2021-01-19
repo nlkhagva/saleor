@@ -38,6 +38,7 @@ from ..product.types import ProductVariant
 from ..shipping.types import ShippingMethod
 from .types import Checkout, CheckoutLine
 
+
 ERROR_DOES_NOT_SHIP = "This checkout doesn't need shipping"
 
 

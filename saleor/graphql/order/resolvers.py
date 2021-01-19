@@ -76,3 +76,10 @@ def resolve_ready2shipping(info, global_page_id=None, ordernumber=None):
         _type, fulfill_pk = graphene.Node.from_global_id(global_page_id)
         fulfill = models.Fulfillment.objects.filter(pk=fulfill_pk).first()
     return fulfill
+
+def resolve_order_chats(info, id):
+    order = graphene.Node.get_node_from_global_id(info, id, Order)
+    chats = OrderEvent.objects.filter(order=order).filter(type=OrderEvents.NOTE_ADDED)
+    
+    return [{"message": chat.parameters['message'], "user": chat.user, "date": chat.date } for chat in chats]
+    # OrderEvent.objects.filter
