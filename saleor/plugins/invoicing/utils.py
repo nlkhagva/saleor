@@ -5,7 +5,7 @@ from datetime import datetime
 import pytz
 from django.conf import settings
 from django.template.loader import get_template
-from weasyprint import HTML
+# from weasyprint import HTML
 
 from ...invoice.models import Invoice
 
@@ -86,5 +86,5 @@ def generate_invoice_pdf(invoice):
             "rest_of_products": rest_of_products,
         }
     )
-    # pass
-    return HTML(string=rendered_template).write_pdf(), creation_date
+    pass
+    # return HTML(string=rendered_template).write_pdf(), creation_date
