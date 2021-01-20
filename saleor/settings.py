@@ -266,7 +266,7 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "phonenumber_field",
-    # 'debug_toolbar',
+    'debug_toolbar',
 ]
 
 
