@@ -13,6 +13,8 @@ from ..core.mutations import (  # ClearMetaBaseMutation,; UpdateMetaBaseMutation
 )
 from ...unurshop.ushop import models
 from ...unurshop.ushop.thumbnails import create_ushop_logo_image_thumbnails
+from ...product.models import Product, ProductType, Category
+from ...core.utils import generate_unique_slug
 
 
 class UshopInput(graphene.InputObjectType):
@@ -74,6 +76,31 @@ class UshopCreate(ModelMutation):
     @classmethod
     def save(cls, info, instance, cleaned_input):
         instance.save()
+
+        if not instance.shipping_product:
+            uk_shipping_pt = ProductType.objects.get(pk=16)
+            uk_shipping_cat = Category.objects.get(pk=24)
+
+            
+            sh_product = Product(
+                product_type = uk_shipping_pt,
+                category = uk_shipping_cat,
+                name = instance.name+" англи дахь хүргэлт",
+                ushop = instance,
+                charge_taxes = False,
+                is_published = True
+            )
+            slug = generate_unique_slug(sh_product, sh_product.name)
+            sh_product.slug = slug
+
+            instance.shipping_product = sh_product
+
+            sh_product.save()
+            instance.save()
+            
+            # ushop.save()
+
+        
         if cleaned_input.get("logo_image"):
             create_ushop_logo_image_thumbnails.delay(instance.pk)
 
