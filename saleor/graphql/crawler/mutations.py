@@ -40,7 +40,9 @@ class CrawlerCreate(ModelMutation):
             # todorhoigui delguur
             ushop = models.Shop.objects.get(pk=1)
 
-        cleaned_input["shop"] = ushop
+        if len(url) > 0:
+            cleaned_input["shop"] = ushop
+
         cleaned_input["listSelection"] = cleaned_input["listSelection"] if cleaned_input["listSelection"] else ushop.listSelection
         cleaned_input["productSelection"] = cleaned_input["productSelection"] if cleaned_input["productSelection"] else ushop.productSelection
 
