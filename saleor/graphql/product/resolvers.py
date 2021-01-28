@@ -47,7 +47,7 @@ def resolve_product_by_slug(info, slug):
 
 def resolve_products(info, stock_availability=None, **_kwargs):
     user = get_user_or_app_from_context(info.context)
-    qs = models.Product.objects.visible_to_user(user)
+    qs = models.Product.objects.visible_to_user(user).exclude(product_type__id = 15).exclude(product_type__id = 16)
 
     if stock_availability:
         qs = filter_products_by_stock_availability(qs, stock_availability)
