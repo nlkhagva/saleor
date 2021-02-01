@@ -545,6 +545,18 @@ class ProductInput(graphene.InputObjectType):
             "is only used if a product doesn't use variants."
         )
     )
+    was_price = PositiveDecimal(
+        description=(
+            "Default price for product variant. "
+            "Note: this field is only used if a product doesn't use variants."
+        )
+    )
+    usale = PositiveDecimal(
+        description=(
+            "Default price for product variant. "
+            "Note: this field is only used if a product doesn't use variants."
+        )
+    )
     base_price = PositiveDecimal(
         description=(
             "Default price for product variant. "
