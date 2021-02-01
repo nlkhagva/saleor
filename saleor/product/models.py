@@ -240,6 +240,19 @@ class Product(SeoModel, ModelWithMetadata, PublishableModel):
 
     # ushop
     ushop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
+    was_price = models.DecimalField(
+        max_digits=settings.DEFAULT_MAX_DIGITS,
+        decimal_places=settings.DEFAULT_DECIMAL_PLACES,
+        blank=True,
+        null=True,
+    )
+    usale = models.DecimalField(
+        max_digits=settings.DEFAULT_MAX_DIGITS,
+        decimal_places=settings.DEFAULT_DECIMAL_PLACES,
+        blank=True,
+        null=True,
+    )
+    
 
     description = models.TextField(blank=True)
     description_json = SanitizedJSONField(

@@ -505,6 +505,8 @@ class Product(CountableDjangoObjectType):
             "is_published",
             "name",
             "ushop",
+            "was_price",
+            "usale",
             "slug",
             "product_type",
             "publication_date",
