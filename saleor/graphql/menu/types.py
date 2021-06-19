@@ -1,5 +1,5 @@
 import graphene
-from graphene import relay
+from graphene import relay, Field, ObjectType
 
 from ...menu import models
 from ..core.connection import CountableDjangoObjectType
@@ -30,6 +30,11 @@ class Menu(CountableDjangoObjectType):
     @staticmethod
     def resolve_items(root: models.Menu, info, **_kwargs):
         return MenuItemsByParentMenuLoader(info.context).load(root.id)
+
+class Mainmenu(ObjectType):
+    women = Field(Menu)
+    men = Field(Menu)
+    kids = Field(Menu)
 
 
 class MenuItem(CountableDjangoObjectType):

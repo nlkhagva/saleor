@@ -1,6 +1,7 @@
 import graphene
 
 from ...unurshop.ushop import models
+from ...product.models import ProductVariant
 from .types import Ushop
 import tldextract
 
@@ -37,3 +38,15 @@ def resolve_ushopByLink(info, link=None):
 def resolve_ushops(info, query):
     user = info.context.user
     return models.Shop.objects.visible_to_user(user)
+
+def resolve_ushopSkuNext(info, data):
+    variants = ProductVariant.objects.filter(sku__startswith='FB').order_by('-sku')
+    if variants:
+        sku =  variants[0].sku
+        if sku:
+            sku_int = int(sku[2:])
+            sku_int += 1
+            sku_str = str(sku_int)
+            return {"sku" :"FB" + sku_str.zfill(4)}
+
+    return {"sku":'FB0001'}

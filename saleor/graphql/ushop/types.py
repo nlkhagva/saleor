@@ -1,5 +1,6 @@
+from django.db.models.fields import Field
 import graphene
-from graphene import relay
+from graphene import relay, ObjectType
 
 from ...unurshop.ushop import models
 
@@ -77,3 +78,6 @@ class Ushop(CountableDjangoObjectType):
                 rendition_key_set="logo_images",
                 info=info,
             )
+
+class SkuNext(ObjectType):
+    sku = graphene.String()

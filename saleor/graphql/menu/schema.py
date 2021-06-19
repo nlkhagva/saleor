@@ -14,9 +14,9 @@ from .mutations import (
     MenuItemUpdate,
     MenuUpdate,
 )
-from .resolvers import resolve_menu, resolve_menu_items, resolve_menus
+from .resolvers import resolve_menu, resolve_menu_items, resolve_menus, resolve_mainmenu
 from .sorters import MenuItemSortingInput, MenuSortingInput
-from .types import Menu, MenuItem
+from .types import Menu, MenuItem, Mainmenu
 
 
 class MenuQueries(graphene.ObjectType):
@@ -45,6 +45,10 @@ class MenuQueries(graphene.ObjectType):
         filter=MenuItemFilterInput(description="Filtering options for menu items."),
         description="List of the storefronts's menu items.",
     )
+    mainmenu =  graphene.Field(
+        Mainmenu,
+        description="Mainmenu storefront's"
+    )
 
     def resolve_menu(self, info, **data):
         return resolve_menu(info, data.get("id"), data.get("name"))
@@ -57,6 +61,9 @@ class MenuQueries(graphene.ObjectType):
 
     def resolve_menu_items(self, info, query=None, **kwargs):
         return resolve_menu_items(info, query, **kwargs)
+    
+    def resolve_mainmenu(self, info, **data):
+        return resolve_mainmenu(info, data)
 
 
 class MenuMutations(graphene.ObjectType):

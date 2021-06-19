@@ -3,9 +3,9 @@ import graphene
 from ..core.fields import FilterInputConnectionField
 from .bulk_mutations import UshopBulkDelete, UshopBulkPublish
 from .mutations import UshopCreate, UshopDelete, UshopUpdate
-from .resolvers import resolve_ushop, resolve_ushopByLink, resolve_ushops
+from .resolvers import resolve_ushop, resolve_ushopByLink, resolve_ushops, resolve_ushopSkuNext
 from .sorters import UshopSortingInput
-from .types import Ushop
+from .types import Ushop, SkuNext
 from .filters import UshopFilterInput
 
 
@@ -26,6 +26,10 @@ class UshopQueries(graphene.ObjectType):
         filter=UshopFilterInput(description="Filtering options for ushop."),
         description="List of the ushop's.",
     )
+    ushopSkuNext = graphene.Field(
+        SkuNext,
+        description="facebook live next SKU Code"
+    )
 
     def resolve_ushop(self, info, id=None):
         return resolve_ushop(info, id)
@@ -35,6 +39,9 @@ class UshopQueries(graphene.ObjectType):
 
     def resolve_ushops(self, info, query=None, **_kwargs):
         return resolve_ushops(info, query=query)
+    
+    def resolve_ushopSkuNext(self, info, **data):
+        return resolve_ushopSkuNext(info, data)
 
 
 class UshopMutations(graphene.ObjectType):

@@ -25,3 +25,10 @@ def resolve_menus(info, query, **_kwargs):
 def resolve_menu_items(info, query, **_kwargs):
     qs = models.MenuItem.objects.all()
     return filter_by_query_param(qs, query, MENU_ITEM_SEARCH_FIELDS)
+
+def resolve_mainmenu(info, data):
+    women = models.Menu.objects.filter(name="women-navbar").first()
+    men = models.Menu.objects.filter(name="men-navbar").first()
+    kids = models.Menu.objects.filter(name="kids-navbar").first()
+
+    return {"women": women, "men": men, "kids": kids}
