@@ -1,4 +1,5 @@
 import datetime
+import os
 from typing import TYPE_CHECKING, Iterable, Optional, Union
 from uuid import uuid4
 
@@ -828,11 +829,23 @@ class AttributeValueTranslation(models.Model):
         return self.name
 
 
+def path_and_rename(instance, filename):
+    ext = filename.split('.')[-1]
+    # get filename
+    if instance.pk:
+        filename = '{}.{}'.format(instance.pk, ext)
+    else:
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    # return os.path.join("products", filename)
+    return 'products/{0}'.format(filename)
+
 class ProductImage(SortableModel):
     product = models.ForeignKey(
         Product, related_name="images", on_delete=models.CASCADE
     )
-    image = VersatileImageField(upload_to="products", ppoi_field="ppoi", blank=False)
+    image = VersatileImageField(upload_to=path_and_rename, ppoi_field="ppoi", blank=False)
     ppoi = PPOIField()
     alt = models.CharField(max_length=128, blank=True)
 
