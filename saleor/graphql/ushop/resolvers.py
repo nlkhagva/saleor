@@ -47,6 +47,7 @@ def resolve_ushopSkuNext(info, data):
             sku_int = int(sku[2:])
             sku_int += 1
             sku_str = str(sku_int)
-            return {"sku" :"FB" + sku_str.zfill(4)}
+            return {"sku" :"FB" + sku_str}
+            # return {"sku" :"FB" + sku_str.zfill(4)}
 
-    return {"sku":'FB0001'}
+    return {"sku":'FB1'}
