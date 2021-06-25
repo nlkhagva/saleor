@@ -40,7 +40,7 @@ def resolve_ushops(info, query):
     return models.Shop.objects.visible_to_user(user)
 
 def resolve_ushopSkuNext(info, data):
-    variants = ProductVariant.objects.filter(sku__startswith='FB').order_by('-sku')
+    variants = ProductVariant.objects.filter(sku__startswith='FB').order_by('-id')
     if variants:
         sku =  variants[0].sku
         if sku:
