@@ -189,7 +189,7 @@ class Shop(graphene.ObjectType):
                 CountryDisplay(
                     code=country[0], country=country[1], vat=taxes.get(country[0])
                 )
-                for country in countries
+                for country in filter(lambda c: c[0] == "MN" or c[0] == "GB", countries)
             ]
 
     @staticmethod
