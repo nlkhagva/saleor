@@ -36,7 +36,7 @@ jobs:
           echo AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }} >> .env
           echo AWS_STATIC_CUSTOM_DOMAIN=${{ secrets.AWS_STATIC_CUSTOM_DOMAIN }} >> .env
           echo ALLOWED_CLIENT_HOSTS=${{ secrets.ALLOWED_CLIENT_HOSTS }} >> .env
-          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+          echo DATABASE_URL="${{ secrets.DATABASE_URL }}" >> .env
           echo EMAIL_URL=${{ secrets.EMAIL_URL }} >> .env
           echo DEFAULT_FROM_EMAIL=${{ secrets.DEFAULT_FROM_EMAIL }} >> .env
           cat .env
