@@ -19,6 +19,7 @@ from ...order.models import FulfillmentLine, OrderLine
 from ...order.utils import add_variant_to_draft_order, recalculate_order
 from ...unurshop.package import PackageStatus
 from ...product.models import ProductVariant
+from ...unurshop.package.utils import generate_unique_mailID
 
 class GaduurInput(graphene.InputObjectType):
     name = graphene.String(description="Gaduur name.")
@@ -120,10 +121,16 @@ class PackageCreate(ModelMutation):
         model = models.Package
         permissions=("page.manage_pages")
 
-    # @classmethod
-    # def clean_input(cls, info, instance, data):
-    #     cleaned_input = super().clean_input(info, instance, data)
-    #     return cleaned_input
+    @classmethod
+    def clean_input(cls, info, instance, data):
+        cleaned_input = super().clean_input(info, instance, data)
+
+        name = cleaned_input.get("name")
+        if not name: 
+            name = generate_unique_mailID(info, instance, data)
+            cleaned_input["name"] = name
+
+        return cleaned_input
 
     @classmethod
     def save_lines (cls, instance: models.Package, cleaned_input: dict):
