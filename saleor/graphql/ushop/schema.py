@@ -30,6 +30,10 @@ class UshopQueries(graphene.ObjectType):
         SkuNext,
         description="facebook live next SKU Code"
     )
+    ushopECR = graphene.Field(
+        SkuNext,
+        description="facebook live next SKU Code"
+    )
 
     def resolve_ushop(self, info, id=None):
         return resolve_ushop(info, id)
@@ -41,6 +45,8 @@ class UshopQueries(graphene.ObjectType):
         return resolve_ushops(info, query=query)
     
     def resolve_ushopSkuNext(self, info, **data):
+        return resolve_ushopSkuNext(info, data)
+    def resolve_ushopECR(self, info, **data):
         return resolve_ushopSkuNext(info, data)
 
 
