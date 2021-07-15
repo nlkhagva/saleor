@@ -99,6 +99,7 @@ class PackageLineInput(graphene.InputObjectType):
 
 class PackageInput(graphene.InputObjectType): #AddressInput
     name = graphene.String(desciption="Package number")
+    upostPK = graphene.String(desciption="Upost pk")
     lines = graphene.List(PackageLineInput, description="package lines")
     shipping_address_id = graphene.ID(description="shipping address id")
     sender_address_id = graphene.ID(description="sender address id")
